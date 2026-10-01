@@ -1,6 +1,7 @@
 import React, { useMemo, useCallback, useState, useEffect } from 'react';
 import {
   ReactFlow,
+  ReactFlowProvider,
   Controls,
   MiniMap,
   Background,
@@ -34,15 +35,14 @@ interface FlowCanvasProps {
 }
 
 /**
- * Contenedor principal de React Flow con nodos interactivos, arrastrables y persistencia espacial.
+ * Lienzo interno interactivo de React Flow.
  */
-export const FlowCanvas: React.FC<FlowCanvasProps> = ({
+const FlowCanvasInterno: React.FC<FlowCanvasProps> = ({
   nodos,
   aristas,
   onSeleccionarNodo,
   onCerrarTooltip
 }) => {
-  // Inicializa nodos aplicando de inmediato posiciones guardadas previamente en localStorage
   const [nodosInternos, setNodosInternos] = useState<NodoScrum[]>(() => {
     const posGuardadas = obtenerPosicionesNodos();
     return nodos.map((nodo) => {
@@ -51,7 +51,6 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
     });
   });
 
-  // Sincroniza nodos visibles respetando las posiciones reubicadas por el usuario al navegar la historia
   useEffect(() => {
     const posGuardadas = obtenerPosicionesNodos();
     setNodosInternos((prevNodos) => {
@@ -63,7 +62,6 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
     });
   }, [nodos]);
 
-  // Persiste automáticamente la nueva posición cuando el usuario arrastra un nodo
   const onNodesChange: OnNodesChange<NodoScrum> = useCallback((cambios) => {
     setNodosInternos((prev) => {
       const actualizados = applyNodeChanges(cambios, prev);
@@ -107,9 +105,6 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
 
   return (
     <div className="relative w-full h-[calc(100vh-4rem)] bg-[#121214] overflow-hidden">
-      {/* 3 Swimlanes que abarcan el 100% del viewport vertical (1/3 exacto cada uno) */}
-      <Swimlanes />
-
       {/* Botón flotante para restablecer posiciones si el usuario desea reiniciar el diseño */}
       <div className="absolute right-4 top-4 z-20">
         <button
@@ -145,6 +140,9 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
           color="#27272a"
         />
 
+        {/* 3 Swimlanes que abarcan el 100% del viewport vertical reactivos al zoom */}
+        <Swimlanes />
+
         {/* Controles de navegación y encuadre (Fit View) */}
         <Controls
           className="!bg-[#1C1C1E] !border !border-zinc-800 !rounded-xl !shadow-xl !overflow-hidden [&>button]:!bg-[#1C1C1E] [&>button]:!border-zinc-800 [&>button]:!text-zinc-300 [&>button:hover]:!bg-zinc-800"
@@ -166,5 +164,16 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
         />
       </ReactFlow>
     </div>
+  );
+};
+
+/**
+ * Componente exportado con proveedor de contexto ReactFlowProvider garantizado.
+ */
+export const FlowCanvas: React.FC<FlowCanvasProps> = (props) => {
+  return (
+    <ReactFlowProvider>
+      <FlowCanvasInterno {...props} />
+    </ReactFlowProvider>
   );
 };

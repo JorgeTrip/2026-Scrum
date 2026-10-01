@@ -15,7 +15,10 @@ const ALTURA_MINIMA_CARRIL = 230;
  * 3. Su ubicación vertical y escala se ajusten dinámicamente con la rueda del ratón y controles en pantalla.
  */
 export const Swimlanes: React.FC = () => {
-  const { x, y, zoom } = useViewport();
+  const viewport = useViewport();
+  const x = viewport?.x ?? 0;
+  const y = viewport?.y ?? 0;
+  const zoom = viewport?.zoom || 1;
 
   const [altoViewport, setAltoViewport] = useState(() =>
     typeof window !== 'undefined' ? Math.max(window.innerHeight - 64, 600) : 700

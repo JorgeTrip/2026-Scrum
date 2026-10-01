@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { TopBar } from './components/TopBar';
 import { FlowCanvas } from './components/FlowCanvas';
 import { PanelHistoria } from './components/PanelHistoria';
+import { LeyendaRelaciones } from './components/LeyendaRelaciones';
 import { useFiltroScrum, aplicarFiltroANodos } from './hooks/useFiltroScrum';
 import { useFlujoScrum } from './hooks/useFlujoScrum';
 import { useHistoriaScrum } from './hooks/useHistoriaScrum';
@@ -9,7 +10,7 @@ import { nodosScrum, aristasScrum } from './data/scrumData';
 
 /**
  * Componente raíz de la aplicación Scrum Interactivo.
- * Orquesta la barra superior, el lienzo con tooltips emergentes de nodos y el panel de historia.
+ * Orquesta la barra superior, el lienzo con tooltips emergentes, la leyenda y la historia.
  */
 export const App: React.FC = () => {
   const {
@@ -90,6 +91,9 @@ export const App: React.FC = () => {
             onAlternarModoMapa={() => setModoActivo('mapa')}
           />
         )}
+
+        {/* Leyenda interactiva de líneas y relaciones */}
+        <LeyendaRelaciones />
       </main>
     </div>
   );

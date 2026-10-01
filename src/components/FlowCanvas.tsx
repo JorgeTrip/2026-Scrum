@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useState, useEffect } from 'react';
+import React, { useMemo, useCallback, useEffect } from 'react';
 import {
   ReactFlow,
   ReactFlowProvider,
@@ -6,8 +6,6 @@ import {
   MiniMap,
   Background,
   BackgroundVariant,
-  applyNodeChanges,
-  type OnNodesChange,
   type NodeMouseHandler,
   type NodeTypes,
   type EdgeTypes
@@ -21,13 +19,9 @@ import { ArtifactNode } from './nodes/ArtifactNode';
 import { AristaDespejada } from './edges/AristaDespejada';
 import { Swimlanes } from './Swimlanes';
 import { ControlZoomPreciso } from './ControlZoomPreciso';
-import { calcularSnapVertical } from '../utils/alineacionSnap';
+import { useNodosConSnap } from '../hooks/useNodosConSnap';
+import { useArrastreLienzoHorizontal } from '../hooks/useArrastreLienzoHorizontal';
 import type { NodoScrum, AristaScrum, DatosNodoScrum } from '../types/scrum';
-import {
-  guardarPosicionNodo,
-  obtenerPosicionesNodos,
-  limpiarPosicionesPersonalizadas
-} from '../utils/persistenciaPosiciones';
 
 interface FlowCanvasProps {
   nodos: NodoScrum[];
@@ -38,6 +32,7 @@ interface FlowCanvasProps {
 
 /**
  * Lienzo interno interactivo de React Flow.
+ * Desplazamiento del fondo restringido exclusivamente al eje horizontal.
  */
 const FlowCanvasInterno: React.FC<FlowCanvasProps> = ({
   nodos,
@@ -45,53 +40,19 @@ const FlowCanvasInterno: React.FC<FlowCanvasProps> = ({
   onSeleccionarNodo,
   onCerrarTooltip
 }) => {
-  const [nodosInternos, setNodosInternos] = useState<NodoScrum[]>(() => {
-    const posGuardadas = obtenerPosicionesNodos();
-    return nodos.map((nodo) => {
-      const pos = posGuardadas[nodo.id];
-      return pos ? { ...nodo, position: pos } : nodo;
-    });
-  });
+  const {
+    nodosInternos,
+    guiaSnapY,
+    onNodesChange,
+    restablecerPosicionesOriginales
+  } = useNodosConSnap(nodos);
 
-  useEffect(() => {
-    const posGuardadas = obtenerPosicionesNodos();
-    setNodosInternos((prevNodos) => {
-      const mapaPosiciones = new Map(prevNodos.map((n) => [n.id, n.position]));
-      return nodos.map((nodo) => {
-        const posReubicada = posGuardadas[nodo.id] ?? mapaPosiciones.get(nodo.id);
-        return posReubicada ? { ...nodo, position: posReubicada } : nodo;
-      });
-    });
-  }, [nodos]);
-
-  const [guiaSnapY, setGuiaSnapY] = useState<number | null>(null);
-
-  const onNodesChange: OnNodesChange<NodoScrum> = useCallback((cambios) => {
-    let snapY: number | null = null;
-    let arrastrando = false;
-
-    const cambiosConSnap = cambios.map((c) => {
-      if (c.type === 'position' && c.position && c.dragging) {
-        arrastrando = true;
-        const res = calcularSnapVertical(c.id, c.position, nodosInternos);
-        if (res.snapY !== null) snapY = res.snapY;
-        return { ...c, position: res.posicion };
-      }
-      return c;
-    });
-
-    setGuiaSnapY(arrastrando ? snapY : null);
-
-    setNodosInternos((prev) => {
-      const actualizados = applyNodeChanges(cambiosConSnap, prev);
-      cambiosConSnap.forEach((c) => {
-        if (c.type === 'position' && c.position) {
-          guardarPosicionNodo(c.id, c.position);
-        }
-      });
-      return actualizados;
-    });
-  }, [nodosInternos]);
+  const {
+    estaArrastrandoFondo,
+    alIniciarArrastre,
+    alMoverLienzo,
+    alFinalizarArrastre
+  } = useArrastreLienzoHorizontal();
 
   const { fitView } = useReactFlow();
 
@@ -111,12 +72,6 @@ const FlowCanvasInterno: React.FC<FlowCanvasProps> = ({
     };
   }, [fitView]);
 
-  const restablecerPosicionesOriginales = useCallback(() => {
-    limpiarPosicionesPersonalizadas();
-    setNodosInternos(nodos);
-    window.dispatchEvent(new CustomEvent('restablecer-posiciones-scrum'));
-  }, [nodos]);
-
   const nodeTypes = useMemo<NodeTypes>(() => ({
     roleNode: RoleNode as unknown as NodeTypes['roleNode'],
     eventNode: EventNode as unknown as NodeTypes['eventNode'],
@@ -130,7 +85,15 @@ const FlowCanvasInterno: React.FC<FlowCanvasProps> = ({
   );
 
   return (
-    <div className="relative w-full h-full bg-[#121214] overflow-hidden">
+    <div
+      onPointerDown={alIniciarArrastre}
+      onPointerMove={alMoverLienzo}
+      onPointerUp={alFinalizarArrastre}
+      onPointerCancel={alFinalizarArrastre}
+      className={`relative w-full h-full bg-[#121214] overflow-hidden ${
+        estaArrastrandoFondo ? 'cursor-grabbing select-none' : 'cursor-grab'
+      }`}
+    >
       {/* Botón flotante para restablecer posiciones si el usuario desea reiniciar el diseño */}
       <div className="absolute right-4 top-4 z-20">
         <button
@@ -153,6 +116,7 @@ const FlowCanvasInterno: React.FC<FlowCanvasProps> = ({
         onPaneClick={onCerrarTooltip}
         nodesDraggable={true}
         elementsSelectable={true}
+        panOnDrag={false}
         fitView
         fitViewOptions={{ padding: 0.15, duration: 600 }}
         minZoom={0.25}

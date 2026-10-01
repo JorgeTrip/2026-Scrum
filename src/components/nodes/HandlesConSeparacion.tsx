@@ -14,25 +14,33 @@ export const HandlesConSeparacion: React.FC = () => {
       <Handle type="target" position={Position.Top} id="top-left" style={{ left: '25%' }} className={claseHandle} />
       <Handle type="target" position={Position.Top} id="top-center" style={{ left: '50%' }} className={claseHandle} />
       <Handle type="target" position={Position.Top} id="top-right" style={{ left: '75%' }} className={claseHandle} />
+      <Handle type="source" position={Position.Top} id="top-left-source" style={{ left: '25%' }} className={claseHandle} />
       <Handle type="source" position={Position.Top} id="top-center-source" style={{ left: '50%' }} className={claseHandle} />
+      <Handle type="source" position={Position.Top} id="top-right-source" style={{ left: '75%' }} className={claseHandle} />
 
       {/* Handles Inferiores (Bottom) */}
       <Handle type="source" position={Position.Bottom} id="bottom-left" style={{ left: '25%' }} className={claseHandle} />
       <Handle type="source" position={Position.Bottom} id="bottom-center" style={{ left: '50%' }} className={claseHandle} />
       <Handle type="source" position={Position.Bottom} id="bottom-right" style={{ left: '75%' }} className={claseHandle} />
+      <Handle type="target" position={Position.Bottom} id="bottom-left-target" style={{ left: '25%' }} className={claseHandle} />
+      <Handle type="target" position={Position.Bottom} id="bottom-center-target" style={{ left: '50%' }} className={claseHandle} />
       <Handle type="target" position={Position.Bottom} id="bottom-right-target" style={{ left: '75%' }} className={claseHandle} />
 
       {/* Handles Izquierdos (Left) */}
       <Handle type="target" position={Position.Left} id="left-top" style={{ top: '35%' }} className={claseHandle} />
       <Handle type="target" position={Position.Left} id="left-center" style={{ top: '50%' }} className={claseHandle} />
       <Handle type="target" position={Position.Left} id="left-bottom" style={{ top: '65%' }} className={claseHandle} />
+      <Handle type="source" position={Position.Left} id="left-top-source" style={{ top: '35%' }} className={claseHandle} />
       <Handle type="source" position={Position.Left} id="left-center-source" style={{ top: '50%' }} className={claseHandle} />
+      <Handle type="source" position={Position.Left} id="left-bottom-source" style={{ top: '65%' }} className={claseHandle} />
 
       {/* Handles Derechos (Right) */}
       <Handle type="source" position={Position.Right} id="right-top" style={{ top: '35%' }} className={claseHandle} />
       <Handle type="source" position={Position.Right} id="right-center" style={{ top: '50%' }} className={claseHandle} />
       <Handle type="source" position={Position.Right} id="right-bottom" style={{ top: '65%' }} className={claseHandle} />
+      <Handle type="target" position={Position.Right} id="right-top-target" style={{ top: '35%' }} className={claseHandle} />
       <Handle type="target" position={Position.Right} id="right-center-target" style={{ top: '50%' }} className={claseHandle} />
+      <Handle type="target" position={Position.Right} id="right-bottom-target" style={{ top: '65%' }} className={claseHandle} />
     </>
   );
 };

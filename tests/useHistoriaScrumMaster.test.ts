@@ -90,7 +90,7 @@ describe('Componente PanelHistoria con Selector de Historia', () => {
       })
     );
 
-    expect(html).toContain('Flujo General');
+    expect(html).toContain('General');
     expect(html).toContain('Scrum Master');
     expect(html).toContain('Etapa 1 de 5');
     expect(html).toContain('El Líder Servicial y el Contenedor');

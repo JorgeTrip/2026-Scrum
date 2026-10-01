@@ -44,7 +44,10 @@ export const aristasScrum: AristaScrum[] = [
   // 1. Relaciones Estratégicas Iniciales con corredores independientes (18px vs 42px)
   crearArista('edge-po-to-vision', 'role-product-owner', 'artifact-vision-board', 'Crea la visión', '#F59E0B', 'bottom-left', 'top-center', 18, true),
   crearArista('edge-vision-to-pb', 'artifact-vision-board', 'artifact-product-backlog', 'Nutre el Product Goal', '#10B981', 'right-center', 'left-center', 24, true),
-  crearArista('edge-po-to-pb', 'role-product-owner', 'artifact-product-backlog', 'Gestiona y prioriza', '#F59E0B', 'bottom-right', 'top-left', 42),
+  crearArista('edge-po-to-pb', 'role-product-owner', 'artifact-product-backlog', 'Gestiona y prioriza', '#F59E0B', 'bottom-center', 'top-left', 42),
+  crearArista('edge-po-to-planning', 'role-product-owner', 'event-sprint-planning', 'Propone el foco de valor', '#F59E0B', 'bottom-right', 'top-left', 38, true),
+  crearArista('edge-po-to-devs', 'role-product-owner', 'role-developers', 'Clarifica alcance y criterios', '#F59E0B', 'right-center', 'left-center', 14, true),
+  crearArista('edge-po-to-review', 'role-product-owner', 'event-sprint-review', 'Lidera sesión con stakeholders', '#F59E0B', 'right-bottom', 'top-center', 52, true),
 
   // 2. Relaciones de Roles hacia Eventos y Artefactos con separación de trayectoria
   crearArista('edge-devs-to-daily', 'role-developers', 'event-daily-scrum', 'Inspeccionan diariamente', '#3B82F6', 'bottom-left', 'top-center', 20, true),
@@ -52,7 +55,7 @@ export const aristasScrum: AristaScrum[] = [
   crearArista('edge-sm-to-retro', 'role-scrum-master', 'event-sprint-retrospective', 'Facilita la mejora', '#8B5CF6', 'bottom-center', 'top-center', 25),
   crearArista('edge-sm-to-sprint', 'role-scrum-master', 'event-sprint', 'Garantiza eventos y timeboxes', '#8B5CF6', 'bottom-left', 'top-right', 34, true),
   crearArista('edge-sm-to-devs', 'role-scrum-master', 'role-developers', 'Coaching y remueve impedimentos', '#8B5CF6', 'left-center-source', 'right-center-target', 16, true),
-  crearArista('edge-sm-to-po', 'role-scrum-master', 'role-product-owner', 'Técnicas de Product Goal', '#8B5CF6', 'bottom-left', 'top-right', 48, true),
+  crearArista('edge-sm-to-po', 'role-scrum-master', 'role-product-owner', 'Técnicas de Product Goal', '#8B5CF6', 'left-top-source', 'top-right', 48, true),
   crearArista('edge-sm-to-increment', 'role-scrum-master', 'artifact-increment', 'Vela por la Definition of Done', '#8B5CF6', 'bottom-right', 'top-center', 30, true),
 
   // 3. Flujo Cronológico y Metodológico con corredores escalonados

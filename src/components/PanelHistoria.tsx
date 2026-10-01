@@ -1,5 +1,4 @@
-import React from 'react';
-import { ArrowLeft, ArrowRight, BookOpen, Compass, RotateCcw, GripHorizontal, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BookOpen, Compass, RotateCcw, GripHorizontal, ShieldCheck, Crown } from 'lucide-react';
 import type { CapituloHistoria } from '../data/datosHistoria';
 import type { TipoHistoria } from '../hooks/useHistoriaScrum';
 import { useArrastrable } from '../hooks/useArrastrable';
@@ -64,31 +63,43 @@ export const PanelHistoria: React.FC<PanelHistoriaProps> = ({
           </div>
         </div>
 
-        {/* Selector interactivo de Modo Historia: General vs Scrum Master */}
-        <div className="flex items-center gap-1.5 p-1 bg-zinc-900/90 rounded-2xl border border-zinc-800/80 mb-3.5 shadow-inner">
+        {/* Selector interactivo de Modo Historia: General vs Scrum Master vs Product Owner */}
+        <div className="flex items-center gap-1 p-1 bg-zinc-900/90 rounded-2xl border border-zinc-800/80 mb-3.5 shadow-inner">
           <button
             type="button"
             onClick={() => onCambiarTipoHistoria('general')}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-1 px-2.5 rounded-xl text-[11px] font-bold transition-all cursor-pointer ${
+            className={`flex-1 flex items-center justify-center gap-1 py-1 px-1.5 rounded-xl text-[10.5px] font-bold transition-all cursor-pointer ${
               tipoHistoria === 'general'
                 ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-500/30'
                 : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
             }`}
           >
-            <BookOpen className="w-3.5 h-3.5" />
-            <span>Flujo General</span>
+            <BookOpen className="w-3 h-3 shrink-0" />
+            <span className="truncate">General</span>
           </button>
           <button
             type="button"
             onClick={() => onCambiarTipoHistoria('scrum-master')}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-1 px-2.5 rounded-xl text-[11px] font-bold transition-all cursor-pointer ${
+            className={`flex-1 flex items-center justify-center gap-1 py-1 px-1.5 rounded-xl text-[10.5px] font-bold transition-all cursor-pointer ${
               tipoHistoria === 'scrum-master'
                 ? 'bg-purple-600 text-white shadow-sm shadow-purple-500/30'
                 : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
             }`}
           >
-            <ShieldCheck className="w-3.5 h-3.5" />
-            <span>Scrum Master</span>
+            <ShieldCheck className="w-3 h-3 shrink-0" />
+            <span className="truncate">Scrum Master</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => onCambiarTipoHistoria('product-owner')}
+            className={`flex-1 flex items-center justify-center gap-1 py-1 px-1.5 rounded-xl text-[10.5px] font-bold transition-all cursor-pointer ${
+              tipoHistoria === 'product-owner'
+                ? 'bg-amber-600 text-white shadow-sm shadow-amber-500/30'
+                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
+            }`}
+          >
+            <Crown className="w-3 h-3 shrink-0" />
+            <span className="truncate">Product Owner</span>
           </button>
         </div>
 

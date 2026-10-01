@@ -7,8 +7,9 @@ import { useState, useMemo, useCallback } from 'react';
 import type { NodoScrum, AristaScrum } from '../types/scrum';
 import { capitulosHistoria, type CapituloHistoria } from '../data/datosHistoria';
 import { capitulosHistoriaScrumMaster } from '../data/datosHistoriaScrumMaster';
+import { capitulosHistoriaProductOwner } from '../data/datosHistoriaProductOwner';
 
-export type TipoHistoria = 'general' | 'scrum-master';
+export type TipoHistoria = 'general' | 'scrum-master' | 'product-owner';
 
 /**
  * Filtra los nodos y aristas que deben ser visibles hasta el paso actual según la historia elegida.
@@ -51,7 +52,9 @@ export function useHistoriaScrum(todosLosNodos: NodoScrum[], todasLasAristas: Ar
   const [tipoHistoria, setTipoHistoria] = useState<TipoHistoria>('general');
 
   const capitulosActivos = useMemo(() => {
-    return tipoHistoria === 'scrum-master' ? capitulosHistoriaScrumMaster : capitulosHistoria;
+    if (tipoHistoria === 'scrum-master') return capitulosHistoriaScrumMaster;
+    if (tipoHistoria === 'product-owner') return capitulosHistoriaProductOwner;
+    return capitulosHistoria;
   }, [tipoHistoria]);
 
   const capituloActual: CapituloHistoria = useMemo(() => {

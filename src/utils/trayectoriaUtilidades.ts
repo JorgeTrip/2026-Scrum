@@ -13,13 +13,20 @@ export interface RutaSVGMinima {
 }
 
 /**
- * Encuentra el punto más cercano sobre la curva SVG a la coordenada del puntero del usuario.
- * Garantiza que la etiqueta permanezca 100% fiel al recorrido de la relación.
+ * Calcula la distancia euclidiana entre dos puntos bidimensionales.
+ */
+export function calcularDistancia(p1: Punto2D, p2: Punto2D): number {
+  return Math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2);
+}
+
+/**
+ * Encuentra el punto más cercano sobre la curva SVG a la coordenada deseada.
+ * Garantiza que la etiqueta o su previsualización permanezca fiel al recorrido de la relación.
  */
 export function proyectarPuntoEnTrayectoria(
   ruta: RutaSVGMinima,
   puntoDeseado: Punto2D,
-  resolucion = 60
+  resolucion = 80
 ): Punto2D {
   const longitudTotal = ruta.getTotalLength();
   if (!longitudTotal || longitudTotal <= 0) {

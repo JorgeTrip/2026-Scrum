@@ -1,7 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { proyectarPuntoEnTrayectoria, type RutaSVGMinima } from '../src/utils/trayectoriaUtilidades';
+import {
+  proyectarPuntoEnTrayectoria,
+  calcularDistancia,
+  type RutaSVGMinima
+} from '../src/utils/trayectoriaUtilidades';
 
-describe('Utilidades de Trayectoria (proyectarPuntoEnTrayectoria)', () => {
+describe('Utilidades de Trayectoria', () => {
   // Simulación de un segmento horizontal de (0, 100) a (200, 100)
   const rutaMockHorizontal: RutaSVGMinima = {
     getTotalLength: () => 200,
@@ -22,5 +26,10 @@ describe('Utilidades de Trayectoria (proyectarPuntoEnTrayectoria)', () => {
     const proyectadoDerecha = proyectarPuntoEnTrayectoria(rutaMockHorizontal, { x: 250, y: 120 });
     expect(proyectadoDerecha.x).toBe(200);
     expect(proyectadoDerecha.y).toBe(100);
+  });
+
+  it('calcula correctamente la distancia euclidiana entre dos puntos', () => {
+    const dist = calcularDistancia({ x: 0, y: 0 }, { x: 3, y: 4 });
+    expect(dist).toBe(5);
   });
 });

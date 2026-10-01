@@ -8,6 +8,7 @@ import type { NodoScrum } from '../../types/scrum';
  */
 export const ArtifactNode: React.FC<NodeProps<NodoScrum>> = memo(({ data, selected }) => {
   const opacidad = data.opacity ?? 1.0;
+  const esFoco = selected || Boolean(data.isSelected);
 
   const obtenerIcono = () => {
     switch (data.id) {
@@ -28,21 +29,21 @@ export const ArtifactNode: React.FC<NodeProps<NodoScrum>> = memo(({ data, select
     <div
       style={{ opacity: opacidad }}
       className={`group relative w-64 rounded-2xl p-4 transition-all duration-300 backdrop-blur-md cursor-pointer
-        bg-[#1C1C1E]/95 hover:bg-[#252528] border-2 shadow-lg shadow-black/20
-        ${selected ? 'border-emerald-400 ring-4 ring-emerald-400/20 scale-[1.02]' : 'border-emerald-500/30 hover:border-emerald-500/60'}
+        bg-[#1C1C1E]/95 hover:bg-[#252528] border-2 shadow-xl shadow-black/30
+        ${esFoco ? 'border-emerald-400 ring-4 ring-emerald-400/20 scale-[1.03] shadow-emerald-500/10' : 'border-emerald-500/30 hover:border-emerald-500/60'}
       `}
     >
       <Handle
         type="target"
         position={Position.Top}
         id="target-top"
-        className="!w-3 !h-3 !bg-emerald-400 !border-2 !border-[#1C1C1E] transition-transform group-hover:scale-125"
+        className="!opacity-0 !pointer-events-none !w-2 !h-2 !border-0"
       />
       <Handle
         type="target"
         position={Position.Left}
         id="target-left"
-        className="!w-3 !h-3 !bg-emerald-400 !border-2 !border-[#1C1C1E] transition-transform group-hover:scale-125"
+        className="!opacity-0 !pointer-events-none !w-2 !h-2 !border-0"
       />
 
       <div className="flex items-center justify-between mb-2">
@@ -79,13 +80,13 @@ export const ArtifactNode: React.FC<NodeProps<NodoScrum>> = memo(({ data, select
         type="source"
         position={Position.Right}
         id="source-right"
-        className="!w-3 !h-3 !bg-emerald-400 !border-2 !border-[#1C1C1E] transition-transform group-hover:scale-125"
+        className="!opacity-0 !pointer-events-none !w-2 !h-2 !border-0"
       />
       <Handle
         type="source"
         position={Position.Bottom}
         id="source-bottom"
-        className="!w-3 !h-3 !bg-emerald-400 !border-2 !border-[#1C1C1E] transition-transform group-hover:scale-125"
+        className="!opacity-0 !pointer-events-none !w-2 !h-2 !border-0"
       />
     </div>
   );

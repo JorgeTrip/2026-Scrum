@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, X, Users, Calendar, Layers, Sparkles } from 'lucide-react';
+import { Search, X, Users, Calendar, Layers, Sparkles, BookOpen, Compass } from 'lucide-react';
 import type { CategoriaScrum } from '../types/scrum';
 
 interface TopBarProps {
@@ -8,17 +8,21 @@ interface TopBarProps {
   categoriaSeleccionada: CategoriaScrum | 'all';
   onSeleccionCategoria: (cat: CategoriaScrum | 'all') => void;
   onResetFiltros: () => void;
+  modoActivo: 'historia' | 'mapa';
+  onCambiarModo: (modo: 'historia' | 'mapa') => void;
 }
 
 /**
- * Barra superior de navegación, búsqueda reactiva y filtros dimensionales.
+ * Barra superior con selector de modo (Historia / Mapa), buscador y filtros.
  */
 export const TopBar: React.FC<TopBarProps> = ({
   busqueda,
   onCambioBusqueda,
   categoriaSeleccionada,
   onSeleccionCategoria,
-  onResetFiltros
+  onResetFiltros,
+  modoActivo,
+  onCambiarModo
 }) => {
   const filtros: { id: CategoriaScrum | 'all'; label: string; icono: React.ReactNode }[] = [
     { id: 'all', label: 'Todos', icono: <Sparkles className="w-3.5 h-3.5" /> },
@@ -28,7 +32,7 @@ export const TopBar: React.FC<TopBarProps> = ({
   ];
 
   return (
-    <header className="h-16 px-6 bg-[#1C1C1E]/90 backdrop-blur-xl border-b border-zinc-800/80 flex items-center justify-between z-20 shadow-md">
+    <header className="h-16 px-6 bg-[#1C1C1E]/95 backdrop-blur-xl border-b border-zinc-800/80 flex items-center justify-between z-20 shadow-md">
       {/* Logotipo y Título */}
       <div className="flex items-center gap-3">
         <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-amber-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
@@ -47,16 +51,42 @@ export const TopBar: React.FC<TopBarProps> = ({
         </div>
       </div>
 
+      {/* Controles Centrales: Selector de Modo (Historia vs Mapa Libre) */}
+      <div className="flex items-center p-1 bg-zinc-900/90 rounded-2xl border border-zinc-800 shadow-inner">
+        <button
+          onClick={() => onCambiarModo('historia')}
+          className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+            modoActivo === 'historia'
+              ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/30'
+              : 'text-zinc-400 hover:text-zinc-200'
+          }`}
+        >
+          <BookOpen className="w-3.5 h-3.5" />
+          <span>Modo Historia (Paso a Paso)</span>
+        </button>
+        <button
+          onClick={() => onCambiarModo('mapa')}
+          className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+            modoActivo === 'mapa'
+              ? 'bg-zinc-800 text-white shadow-md border border-zinc-700'
+              : 'text-zinc-400 hover:text-zinc-200'
+          }`}
+        >
+          <Compass className="w-3.5 h-3.5" />
+          <span>Mapa Libre</span>
+        </button>
+      </div>
+
       {/* Controles de Búsqueda y Filtros */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
         {/* Input de Búsqueda */}
-        <div className="relative w-64 md:w-72">
+        <div className="relative w-56 md:w-64">
           <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
             value={busqueda}
             onChange={(e) => onCambioBusqueda(e.target.value)}
-            placeholder="Buscar rol, evento o artefacto..."
+            placeholder="Buscar concepto..."
             className="w-full h-9 pl-9 pr-8 bg-zinc-900/90 hover:bg-zinc-900 focus:bg-zinc-950 text-xs text-white rounded-xl border border-zinc-700/70 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all placeholder:text-zinc-500"
           />
           {busqueda && (
@@ -69,33 +99,35 @@ export const TopBar: React.FC<TopBarProps> = ({
           )}
         </div>
 
-        {/* Botones de Filtro por Categoría */}
-        <div className="flex items-center p-1 bg-zinc-900/80 rounded-xl border border-zinc-800">
-          {filtros.map((f) => {
-            const activo = categoriaSeleccionada === f.id;
-            return (
-              <button
-                key={f.id}
-                onClick={() => onSeleccionCategoria(f.id)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                  activo
-                    ? 'bg-zinc-800 text-white shadow-sm border border-zinc-700/80'
-                    : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/40'
-                }`}
-              >
-                {f.icono}
-                <span>{f.label}</span>
-              </button>
-            );
-          })}
-        </div>
+        {/* Filtros por Categoría (en modo Mapa) */}
+        {modoActivo === 'mapa' && (
+          <div className="flex items-center p-1 bg-zinc-900/80 rounded-xl border border-zinc-800">
+            {filtros.map((f) => {
+              const activo = categoriaSeleccionada === f.id;
+              return (
+                <button
+                  key={f.id}
+                  onClick={() => onSeleccionCategoria(f.id)}
+                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
+                    activo
+                      ? 'bg-zinc-800 text-white shadow-sm border border-zinc-700/80'
+                      : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/40'
+                  }`}
+                >
+                  {f.icono}
+                  <span>{f.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
 
-        {(busqueda || categoriaSeleccionada !== 'all') && (
+        {(busqueda || (modoActivo === 'mapa' && categoriaSeleccionada !== 'all')) && (
           <button
             onClick={onResetFiltros}
-            className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors font-medium px-2 py-1"
+            className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors font-medium px-1"
           >
-            Limpiar filtros
+            Limpiar
           </button>
         )}
       </div>

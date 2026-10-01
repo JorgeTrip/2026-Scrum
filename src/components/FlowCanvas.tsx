@@ -5,8 +5,6 @@ import {
   MiniMap,
   Background,
   BackgroundVariant,
-  useNodesState,
-  useEdgesState,
   type NodeMouseHandler,
   type NodeTypes
 } from '@xyflow/react';
@@ -16,18 +14,18 @@ import { RoleNode } from './nodes/RoleNode';
 import { EventNode } from './nodes/EventNode';
 import { ArtifactNode } from './nodes/ArtifactNode';
 import { Swimlanes } from './Swimlanes';
-import { aristasScrum } from '../data/scrumData';
-import type { NodoScrum, DatosNodoScrum } from '../types/scrum';
+import type { NodoScrum, AristaScrum, DatosNodoScrum } from '../types/scrum';
 
 interface FlowCanvasProps {
   nodos: NodoScrum[];
+  aristas: AristaScrum[];
   onSeleccionarNodo: (datos: DatosNodoScrum) => void;
 }
 
 /**
  * Contenedor principal del diagrama React Flow con Swimlanes y MiniMap.
  */
-export const FlowCanvas: React.FC<FlowCanvasProps> = ({ nodos, onSeleccionarNodo }) => {
+export const FlowCanvas: React.FC<FlowCanvasProps> = ({ nodos, aristas, onSeleccionarNodo }) => {
   const nodeTypes = useMemo<NodeTypes>(
     () => ({
       roleNode: RoleNode as unknown as NodeTypes['roleNode'],
@@ -36,9 +34,6 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({ nodos, onSeleccionarNodo
     }),
     []
   );
-
-  const [, , onNodesChange] = useNodesState<NodoScrum>(nodos);
-  const [edges, , onEdgesChange] = useEdgesState(aristasScrum);
 
   const manejarClickEnNodo: NodeMouseHandler<NodoScrum> = useCallback(
     (_evento, nodo) => {
@@ -51,16 +46,13 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({ nodos, onSeleccionarNodo
     <div className="relative w-full h-[calc(100vh-4rem)] bg-[#121214]">
       <ReactFlow<NodoScrum>
         nodes={nodos}
-        edges={edges}
+        edges={aristas}
         nodeTypes={nodeTypes}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
         onNodeClick={manejarClickEnNodo}
         fitView
-        fitViewOptions={{ padding: 0.15 }}
+        fitViewOptions={{ padding: 0.2, duration: 600 }}
         minZoom={0.3}
         maxZoom={1.8}
-        defaultViewport={{ x: 50, y: 30, zoom: 0.85 }}
         proOptions={{ hideAttribution: true }}
       >
         <Background

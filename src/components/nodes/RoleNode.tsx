@@ -8,6 +8,7 @@ import type { NodoScrum } from '../../types/scrum';
  */
 export const RoleNode: React.FC<NodeProps<NodoScrum>> = memo(({ data, selected }) => {
   const opacidad = data.opacity ?? 1.0;
+  const esFoco = selected || Boolean(data.isSelected);
 
   const obtenerIcono = () => {
     switch (data.id) {
@@ -26,14 +27,15 @@ export const RoleNode: React.FC<NodeProps<NodoScrum>> = memo(({ data, selected }
     <div
       style={{ opacity: opacidad }}
       className={`group relative w-64 rounded-2xl p-4 transition-all duration-300 backdrop-blur-md cursor-pointer
-        bg-[#1C1C1E]/95 hover:bg-[#252528] border-2 shadow-lg shadow-black/20
-        ${selected ? 'border-amber-400 ring-4 ring-amber-400/20 scale-[1.02]' : 'border-amber-500/30 hover:border-amber-500/60'}
+        bg-[#1C1C1E]/95 hover:bg-[#252528] border-2 shadow-xl shadow-black/30
+        ${esFoco ? 'border-amber-400 ring-4 ring-amber-400/20 scale-[1.03] shadow-amber-500/10' : 'border-amber-500/30 hover:border-amber-500/60'}
       `}
     >
+      {/* Handles invisibles para una estética limpia sin puntos visibles */}
       <Handle
         type="target"
         position={Position.Top}
-        className="!w-3 !h-3 !bg-amber-400 !border-2 !border-[#1C1C1E] transition-transform group-hover:scale-125"
+        className="!opacity-0 !pointer-events-none !w-2 !h-2 !border-0"
       />
 
       <div className="flex items-center justify-between mb-2">
@@ -62,7 +64,7 @@ export const RoleNode: React.FC<NodeProps<NodoScrum>> = memo(({ data, selected }
       <Handle
         type="source"
         position={Position.Bottom}
-        className="!w-3 !h-3 !bg-amber-400 !border-2 !border-[#1C1C1E] transition-transform group-hover:scale-125"
+        className="!opacity-0 !pointer-events-none !w-2 !h-2 !border-0"
       />
     </div>
   );

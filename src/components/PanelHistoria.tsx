@@ -83,7 +83,10 @@ export const PanelHistoria: React.FC<PanelHistoriaProps> = ({
             <BookOpen className="w-4 h-4 text-indigo-400 shrink-0" />
             <span>{capitulo.titulo}</span>
           </h2>
-          <p className="text-xs text-zinc-300 leading-relaxed max-h-36 overflow-y-auto pr-1">
+          <p
+            onWheel={(e) => e.stopPropagation()}
+            className="nowheel text-xs text-zinc-300 leading-relaxed max-h-36 overflow-y-auto pr-1"
+          >
             {capitulo.narrativa}
           </p>
         </div>

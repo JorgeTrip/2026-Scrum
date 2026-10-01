@@ -9,7 +9,8 @@ interface TooltipFichaTecnicaProps {
 
 /**
  * Tooltip enriquecido que emerge directamente del nodo seleccionado en el lienzo.
- * Presenta la ficha técnica completa manteniéndose anclado al nodo durante el paneo y arrastre.
+ * Cuenta con 'nowheel nopan nodrag' y detención de propagación de eventos wheel
+ * para que la rueda del ratón desplace el contenido interno sin alterar el zoom general.
  */
 export const TooltipFichaTecnica: React.FC<TooltipFichaTecnicaProps> = ({ datos, onCerrar }) => {
   const { label, category, summary, details } = datos;
@@ -30,7 +31,8 @@ export const TooltipFichaTecnica: React.FC<TooltipFichaTecnicaProps> = ({ datos,
   return (
     <div
       onClick={(e) => e.stopPropagation()}
-      className="w-80 md:w-96 bg-[#1C1C1E]/98 backdrop-blur-2xl border border-zinc-700/90 rounded-2xl p-4 shadow-2xl shadow-black/90 text-zinc-200 text-xs select-text cursor-default animate-in fade-in zoom-in-95 duration-200"
+      onWheel={(e) => e.stopPropagation()}
+      className="nowheel nopan nodrag w-80 md:w-96 bg-[#1C1C1E]/98 backdrop-blur-2xl border border-zinc-700/90 rounded-2xl p-4 shadow-2xl shadow-black/90 text-zinc-200 text-xs select-text cursor-default animate-in fade-in zoom-in-95 duration-200"
     >
       {/* Cabecera del Tooltip */}
       <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-zinc-800">
@@ -51,8 +53,11 @@ export const TooltipFichaTecnica: React.FC<TooltipFichaTecnicaProps> = ({ datos,
         </button>
       </div>
 
-      {/* Contenido desplazable */}
-      <div className="space-y-3 max-h-64 overflow-y-auto pr-1">
+      {/* Contenido desplazable con aislamiento de rueda de zoom */}
+      <div
+        onWheel={(e) => e.stopPropagation()}
+        className="nowheel space-y-3 max-h-64 overflow-y-auto pr-1"
+      >
         {/* Resumen */}
         <div>
           <p className="text-[11px] text-zinc-300 leading-relaxed bg-zinc-900/60 p-2.5 rounded-xl border border-zinc-800/80">

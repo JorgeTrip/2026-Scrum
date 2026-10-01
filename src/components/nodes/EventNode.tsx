@@ -30,7 +30,7 @@ export const EventNode: React.FC<NodeProps<NodoScrum>> = memo(({ data, selected 
   return (
     <div
       style={{ opacity: opacidad }}
-      className={`group relative w-64 rounded-2xl p-4 transition-all duration-300 backdrop-blur-md cursor-pointer
+      className={`group relative w-64 rounded-2xl p-4 transition-all duration-300 backdrop-blur-md cursor-grab active:cursor-grabbing
         bg-[#1C1C1E]/95 hover:bg-[#252528] border-2 shadow-xl shadow-black/30
         ${esFoco ? 'border-indigo-400 ring-4 ring-indigo-400/20 scale-[1.03] shadow-indigo-500/10' : 'border-indigo-500/30 hover:border-indigo-500/60'}
       `}

@@ -1,10 +1,12 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useState, useEffect } from 'react';
 import {
   ReactFlow,
   Controls,
   MiniMap,
   Background,
   BackgroundVariant,
+  applyNodeChanges,
+  type OnNodesChange,
   type NodeMouseHandler,
   type NodeTypes
 } from '@xyflow/react';
@@ -23,9 +25,27 @@ interface FlowCanvasProps {
 }
 
 /**
- * Contenedor principal del diagrama React Flow con Swimlanes y MiniMap.
+ * Contenedor principal de React Flow con nodos interactivos y arrastrables.
+ * Mantiene las posiciones personalizadas por el usuario para evitar superposiciones de aristas.
  */
 export const FlowCanvas: React.FC<FlowCanvasProps> = ({ nodos, aristas, onSeleccionarNodo }) => {
+  const [nodosInternos, setNodosInternos] = useState<NodoScrum[]>(nodos);
+
+  // Sincroniza nodos visibles preservando las posiciones reubicadas por el usuario
+  useEffect(() => {
+    setNodosInternos((prevNodos) => {
+      const mapaPosiciones = new Map(prevNodos.map((n) => [n.id, n.position]));
+      return nodos.map((nodo) => {
+        const posReubicada = mapaPosiciones.get(nodo.id);
+        return posReubicada ? { ...nodo, position: posReubicada } : nodo;
+      });
+    });
+  }, [nodos]);
+
+  const onNodesChange: OnNodesChange<NodoScrum> = useCallback((cambios) => {
+    setNodosInternos((prev) => applyNodeChanges(cambios, prev));
+  }, []);
+
   const nodeTypes = useMemo<NodeTypes>(
     () => ({
       roleNode: RoleNode as unknown as NodeTypes['roleNode'],
@@ -45,10 +65,13 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({ nodos, aristas, onSelecc
   return (
     <div className="relative w-full h-[calc(100vh-4rem)] bg-[#121214]">
       <ReactFlow<NodoScrum>
-        nodes={nodos}
+        nodes={nodosInternos}
         edges={aristas}
         nodeTypes={nodeTypes}
+        onNodesChange={onNodesChange}
         onNodeClick={manejarClickEnNodo}
+        nodesDraggable={true}
+        elementsSelectable={true}
         fitView
         fitViewOptions={{ padding: 0.2, duration: 600 }}
         minZoom={0.3}

@@ -3,7 +3,6 @@ import {
   ReactFlow,
   ReactFlowProvider,
   useReactFlow,
-  Controls,
   MiniMap,
   Background,
   BackgroundVariant,
@@ -21,6 +20,7 @@ import { EventNode } from './nodes/EventNode';
 import { ArtifactNode } from './nodes/ArtifactNode';
 import { AristaDespejada } from './edges/AristaDespejada';
 import { Swimlanes } from './Swimlanes';
+import { ControlZoomPreciso } from './ControlZoomPreciso';
 import type { NodoScrum, AristaScrum, DatosNodoScrum } from '../types/scrum';
 import {
   guardarPosicionNodo,
@@ -139,9 +139,9 @@ const FlowCanvasInterno: React.FC<FlowCanvasProps> = ({
         nodesDraggable={true}
         elementsSelectable={true}
         fitView
-        fitViewOptions={{ padding: 0.2, duration: 600 }}
-        minZoom={0.3}
-        maxZoom={1.8}
+        fitViewOptions={{ padding: 0.15, duration: 600 }}
+        minZoom={0.25}
+        maxZoom={2.2}
         proOptions={{ hideAttribution: true }}
       >
         <Background
@@ -154,13 +154,8 @@ const FlowCanvasInterno: React.FC<FlowCanvasProps> = ({
         {/* 3 Swimlanes que abarcan el 100% del viewport vertical reactivos al zoom */}
         <Swimlanes />
 
-        {/* Controles de navegación y encuadre ubicados a la izquierda del mini-mapa */}
-        <Controls
-          position="bottom-right"
-          style={{ marginRight: 225 }}
-          className="!bg-[#1C1C1E] !border !border-zinc-800 !rounded-xl !shadow-xl !overflow-hidden [&>button]:!bg-[#1C1C1E] [&>button]:!border-zinc-800 [&>button]:!text-zinc-300 [&>button:hover]:!bg-zinc-800"
-          showInteractive={false}
-        />
+        {/* Control de zoom de alta precisión y micro-pasos junto al mini-mapa */}
+        <ControlZoomPreciso />
 
         {/* Mini-mapa en la esquina inferior derecha */}
         <MiniMap<NodoScrum>

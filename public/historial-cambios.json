@@ -1,5 +1,12 @@
 [
   {
+    "hash": "77f0ecb",
+    "mensaje": "feat: Se hardcodean coordenadas predeterminadas y se agrega autoencuadre responsive",
+    "autor": "Jorge O. Tripodi",
+    "fecha": "2026-10-01",
+    "tipo": "feat"
+  },
+  {
     "hash": "888be03",
     "mensaje": "feat: Se agrega README completo con especificacion metodologica y tecnica",
     "autor": "Jorge O. Tripodi",

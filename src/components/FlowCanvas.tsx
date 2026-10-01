@@ -11,6 +11,7 @@ import {
   type NodeTypes,
   type EdgeTypes
 } from '@xyflow/react';
+import { RotateCcw } from 'lucide-react';
 import '@xyflow/react/dist/style.css';
 
 import { RoleNode } from './nodes/RoleNode';
@@ -19,6 +20,11 @@ import { ArtifactNode } from './nodes/ArtifactNode';
 import { AristaDespejada } from './edges/AristaDespejada';
 import { Swimlanes } from './Swimlanes';
 import type { NodoScrum, AristaScrum, DatosNodoScrum } from '../types/scrum';
+import {
+  guardarPosicionNodo,
+  obtenerPosicionesNodos,
+  limpiarPosicionesPersonalizadas
+} from '../utils/persistenciaPosiciones';
 
 interface FlowCanvasProps {
   nodos: NodoScrum[];
@@ -28,7 +34,7 @@ interface FlowCanvasProps {
 }
 
 /**
- * Contenedor principal de React Flow con nodos interactivos, arrastrables y aristas despejadas.
+ * Contenedor principal de React Flow con nodos interactivos, arrastrables y persistencia espacial.
  */
 export const FlowCanvas: React.FC<FlowCanvasProps> = ({
   nodos,
@@ -36,22 +42,45 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
   onSeleccionarNodo,
   onCerrarTooltip
 }) => {
-  const [nodosInternos, setNodosInternos] = useState<NodoScrum[]>(nodos);
+  // Inicializa nodos aplicando de inmediato posiciones guardadas previamente en localStorage
+  const [nodosInternos, setNodosInternos] = useState<NodoScrum[]>(() => {
+    const posGuardadas = obtenerPosicionesNodos();
+    return nodos.map((nodo) => {
+      const pos = posGuardadas[nodo.id];
+      return pos ? { ...nodo, position: pos } : nodo;
+    });
+  });
 
-  // Sincroniza nodos visibles preservando las posiciones reubicadas por el usuario
+  // Sincroniza nodos visibles respetando las posiciones reubicadas por el usuario al navegar la historia
   useEffect(() => {
+    const posGuardadas = obtenerPosicionesNodos();
     setNodosInternos((prevNodos) => {
       const mapaPosiciones = new Map(prevNodos.map((n) => [n.id, n.position]));
       return nodos.map((nodo) => {
-        const posReubicada = mapaPosiciones.get(nodo.id);
+        const posReubicada = posGuardadas[nodo.id] ?? mapaPosiciones.get(nodo.id);
         return posReubicada ? { ...nodo, position: posReubicada } : nodo;
       });
     });
   }, [nodos]);
 
+  // Persiste automáticamente la nueva posición cuando el usuario arrastra un nodo
   const onNodesChange: OnNodesChange<NodoScrum> = useCallback((cambios) => {
-    setNodosInternos((prev) => applyNodeChanges(cambios, prev));
+    setNodosInternos((prev) => {
+      const actualizados = applyNodeChanges(cambios, prev);
+      cambios.forEach((c) => {
+        if (c.type === 'position' && c.position) {
+          guardarPosicionNodo(c.id, c.position);
+        }
+      });
+      return actualizados;
+    });
   }, []);
+
+  const restablecerPosicionesOriginales = useCallback(() => {
+    limpiarPosicionesPersonalizadas();
+    setNodosInternos(nodos);
+    window.dispatchEvent(new CustomEvent('restablecer-posiciones-scrum'));
+  }, [nodos]);
 
   const nodeTypes = useMemo<NodeTypes>(
     () => ({
@@ -78,11 +107,19 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
 
   return (
     <div className="relative w-full h-[calc(100vh-4rem)] bg-[#121214] overflow-hidden">
-      {/* Respaldo visual tricolor que cubre todo el viewport vertical */}
-      <div className="absolute inset-0 flex flex-col pointer-events-none select-none opacity-30 z-0">
-        <div className="flex-1 bg-gradient-to-b from-amber-950/25 to-transparent border-b border-amber-500/10" />
-        <div className="flex-1 bg-gradient-to-b from-indigo-950/25 to-transparent border-b border-indigo-500/10" />
-        <div className="flex-1 bg-gradient-to-b from-emerald-950/25 to-transparent" />
+      {/* 3 Swimlanes que abarcan el 100% del viewport vertical (1/3 exacto cada uno) */}
+      <Swimlanes />
+
+      {/* Botón flotante para restablecer posiciones si el usuario desea reiniciar el diseño */}
+      <div className="absolute right-4 top-4 z-20">
+        <button
+          onClick={restablecerPosicionesOriginales}
+          title="Restablecer posiciones predeterminadas de nodos y etiquetas"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#1C1C1E]/90 hover:bg-zinc-800 border border-zinc-700/80 text-zinc-300 hover:text-white text-xs font-medium shadow-lg backdrop-blur-md transition-all active:scale-95"
+        >
+          <RotateCcw className="w-3.5 h-3.5 text-zinc-400" />
+          <span>Restablecer mapa</span>
+        </button>
       </div>
 
       <ReactFlow<NodoScrum>
@@ -107,9 +144,6 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
           size={1.5}
           color="#27272a"
         />
-
-        {/* Carriles horizontales tridimensionales */}
-        <Swimlanes />
 
         {/* Controles de navegación y encuadre (Fit View) */}
         <Controls

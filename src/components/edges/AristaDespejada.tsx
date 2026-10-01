@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import {
   BaseEdge,
   EdgeLabelRenderer,
@@ -7,6 +7,10 @@ import {
   type EdgeProps
 } from '@xyflow/react';
 import { proyectarPuntoEnTrayectoria, type Punto2D } from '../../utils/trayectoriaUtilidades';
+import {
+  guardarPosicionEtiqueta,
+  obtenerPosicionEtiqueta
+} from '../../utils/persistenciaPosiciones';
 
 interface DatosAristaPersonalizada {
   offset?: number;
@@ -34,9 +38,20 @@ export const AristaDespejada: React.FC<EdgeProps> = ({
   const radioBorde = datos.borderRadius ?? 16;
 
   const refRuta = useRef<SVGPathElement>(null);
-  const [posicionDesplazada, setPosicionDesplazada] = useState<Punto2D | null>(null);
+  const [posicionDesplazada, setPosicionDesplazada] = useState<Punto2D | null>(() => {
+    return obtenerPosicionEtiqueta(id);
+  });
   const [estaArrastrando, setEstaArrastrando] = useState(false);
   const { screenToFlowPosition } = useReactFlow();
+
+  // Escucha restablecimiento global de posiciones para sincronizar la etiqueta
+  useEffect(() => {
+    const alRestablecer = () => {
+      setPosicionDesplazada(null);
+    };
+    window.addEventListener('restablecer-posiciones-scrum', alRestablecer);
+    return () => window.removeEventListener('restablecer-posiciones-scrum', alRestablecer);
+  }, []);
 
   const [edgePath, labelX, labelY] = getSmoothStepPath({
     sourceX,
@@ -67,15 +82,22 @@ export const AristaDespejada: React.FC<EdgeProps> = ({
       const puntoFlujo = screenToFlowPosition({ x: e.clientX, y: e.clientY });
       const puntoProyectado = proyectarPuntoEnTrayectoria(refRuta.current, puntoFlujo);
       setPosicionDesplazada(puntoProyectado);
+      guardarPosicionEtiqueta(id, puntoProyectado);
     },
-    [estaArrastrando, screenToFlowPosition]
+    [estaArrastrando, screenToFlowPosition, id]
   );
 
-  const finalizarArrastreEtiqueta = useCallback((e: React.PointerEvent) => {
-    if (!estaArrastrando) return;
-    e.stopPropagation();
-    setEstaArrastrando(false);
-  }, [estaArrastrando]);
+  const finalizarArrastreEtiqueta = useCallback(
+    (e: React.PointerEvent) => {
+      if (!estaArrastrando) return;
+      e.stopPropagation();
+      setEstaArrastrando(false);
+      if (posicionDesplazada) {
+        guardarPosicionEtiqueta(id, posicionDesplazada);
+      }
+    },
+    [estaArrastrando, id, posicionDesplazada]
+  );
 
   return (
     <>

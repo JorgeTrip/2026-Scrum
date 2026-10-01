@@ -77,7 +77,14 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
   );
 
   return (
-    <div className="relative w-full h-[calc(100vh-4rem)] bg-[#121214]">
+    <div className="relative w-full h-[calc(100vh-4rem)] bg-[#121214] overflow-hidden">
+      {/* Respaldo visual tricolor que cubre todo el viewport vertical */}
+      <div className="absolute inset-0 flex flex-col pointer-events-none select-none opacity-30 z-0">
+        <div className="flex-1 bg-gradient-to-b from-amber-950/25 to-transparent border-b border-amber-500/10" />
+        <div className="flex-1 bg-gradient-to-b from-indigo-950/25 to-transparent border-b border-indigo-500/10" />
+        <div className="flex-1 bg-gradient-to-b from-emerald-950/25 to-transparent" />
+      </div>
+
       <ReactFlow<NodoScrum>
         nodes={nodosInternos}
         edges={aristas}

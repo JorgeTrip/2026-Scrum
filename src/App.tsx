@@ -3,6 +3,7 @@ import { TopBar } from './components/TopBar';
 import { FlowCanvas } from './components/FlowCanvas';
 import { PanelHistoria } from './components/PanelHistoria';
 import { LeyendaRelaciones } from './components/LeyendaRelaciones';
+import { Footer } from './components/Footer';
 import { useFiltroScrum, aplicarFiltroANodos } from './hooks/useFiltroScrum';
 import { useFlujoScrum } from './hooks/useFlujoScrum';
 import { useHistoriaScrum } from './hooks/useHistoriaScrum';
@@ -95,6 +96,9 @@ export const App: React.FC = () => {
         {/* Leyenda interactiva de líneas y relaciones */}
         <LeyendaRelaciones />
       </main>
+
+      {/* Pie de página institucional con autoría y copyright */}
+      <Footer />
     </div>
   );
 };

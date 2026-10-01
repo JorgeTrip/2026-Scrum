@@ -14,12 +14,12 @@ export const Swimlanes: React.FC = () => {
   const zoom = viewport?.zoom || 1;
 
   const [altoViewport, setAltoViewport] = useState(() =>
-    typeof window !== 'undefined' ? Math.max(window.innerHeight - 64, 600) : 700
+    typeof window !== 'undefined' ? Math.max(window.innerHeight - 96, 500) : 650
   );
 
   useEffect(() => {
     const alRedimensionar = () => {
-      setAltoViewport(Math.max(window.innerHeight - 64, 600));
+      setAltoViewport(Math.max(window.innerHeight - 96, 500));
     };
     window.addEventListener('resize', alRedimensionar);
     return () => window.removeEventListener('resize', alRedimensionar);

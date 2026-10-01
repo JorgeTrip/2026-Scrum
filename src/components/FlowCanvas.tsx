@@ -104,7 +104,7 @@ const FlowCanvasInterno: React.FC<FlowCanvasProps> = ({
   );
 
   return (
-    <div className="relative w-full h-[calc(100vh-4rem)] bg-[#121214] overflow-hidden">
+    <div className="relative w-full h-full bg-[#121214] overflow-hidden">
       {/* Botón flotante para restablecer posiciones si el usuario desea reiniciar el diseño */}
       <div className="absolute right-4 top-4 z-20">
         <button

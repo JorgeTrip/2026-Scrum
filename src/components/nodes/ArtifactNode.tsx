@@ -1,7 +1,8 @@
 import React, { memo } from 'react';
-import { Handle, Position, type NodeProps } from '@xyflow/react';
+import type { NodeProps } from '@xyflow/react';
 import { Layers, ListOrdered, CheckCircle2, BookmarkCheck, Compass } from 'lucide-react';
 import type { NodoScrum } from '../../types/scrum';
+import { HandlesConSeparacion } from './HandlesConSeparacion';
 
 /**
  * Componente visual para nodos de la dimensión Documentos (Artefactos y Compromisos).
@@ -35,18 +36,7 @@ export const ArtifactNode: React.FC<NodeProps<NodoScrum>> = memo(({ data, select
         ${esFoco ? 'border-emerald-400 ring-4 ring-emerald-400/20 scale-[1.03] shadow-emerald-500/10' : 'border-emerald-500/30 hover:border-emerald-500/60'}
       `}
     >
-      <Handle
-        type="target"
-        position={Position.Top}
-        id="target-top"
-        className="!opacity-0 !pointer-events-none !w-2 !h-2 !border-0"
-      />
-      <Handle
-        type="target"
-        position={Position.Left}
-        id="target-left"
-        className="!opacity-0 !pointer-events-none !w-2 !h-2 !border-0"
-      />
+      <HandlesConSeparacion />
 
       <div className="flex items-center justify-between mb-2">
         <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
@@ -77,19 +67,6 @@ export const ArtifactNode: React.FC<NodeProps<NodoScrum>> = memo(({ data, select
           Ver ficha &rarr;
         </span>
       </div>
-
-      <Handle
-        type="source"
-        position={Position.Right}
-        id="source-right"
-        className="!opacity-0 !pointer-events-none !w-2 !h-2 !border-0"
-      />
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        id="source-bottom"
-        className="!opacity-0 !pointer-events-none !w-2 !h-2 !border-0"
-      />
     </div>
   );
 });

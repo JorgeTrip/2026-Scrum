@@ -1,7 +1,8 @@
 import React, { memo } from 'react';
-import { Handle, Position, type NodeProps } from '@xyflow/react';
+import type { NodeProps } from '@xyflow/react';
 import { Calendar, Clock, RotateCcw, Eye, Sparkles, Repeat } from 'lucide-react';
 import type { NodoScrum } from '../../types/scrum';
+import { HandlesConSeparacion } from './HandlesConSeparacion';
 
 /**
  * Componente visual para nodos de la dimensión Eventos del Ciclo (Ceremonias).
@@ -35,18 +36,7 @@ export const EventNode: React.FC<NodeProps<NodoScrum>> = memo(({ data, selected 
         ${esFoco ? 'border-indigo-400 ring-4 ring-indigo-400/20 scale-[1.03] shadow-indigo-500/10' : 'border-indigo-500/30 hover:border-indigo-500/60'}
       `}
     >
-      <Handle
-        type="target"
-        position={Position.Left}
-        id="target-left"
-        className="!opacity-0 !pointer-events-none !w-2 !h-2 !border-0"
-      />
-      <Handle
-        type="target"
-        position={Position.Top}
-        id="target-top"
-        className="!opacity-0 !pointer-events-none !w-2 !h-2 !border-0"
-      />
+      <HandlesConSeparacion />
 
       <div className="flex items-center justify-between mb-2">
         <div className="p-2 rounded-xl bg-indigo-500/10 border border-indigo-500/20">
@@ -77,19 +67,6 @@ export const EventNode: React.FC<NodeProps<NodoScrum>> = memo(({ data, selected 
           Ver ficha &rarr;
         </span>
       </div>
-
-      <Handle
-        type="source"
-        position={Position.Right}
-        id="source-right"
-        className="!opacity-0 !pointer-events-none !w-2 !h-2 !border-0"
-      />
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        id="source-bottom"
-        className="!opacity-0 !pointer-events-none !w-2 !h-2 !border-0"
-      />
     </div>
   );
 });

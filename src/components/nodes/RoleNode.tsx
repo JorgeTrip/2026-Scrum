@@ -1,7 +1,8 @@
 import React, { memo } from 'react';
-import { Handle, Position, type NodeProps } from '@xyflow/react';
+import type { NodeProps } from '@xyflow/react';
 import { Users, ShieldCheck, Code2 } from 'lucide-react';
 import type { NodoScrum } from '../../types/scrum';
+import { HandlesConSeparacion } from './HandlesConSeparacion';
 
 /**
  * Componente visual para nodos de la dimensión Personas (Roles).
@@ -31,12 +32,7 @@ export const RoleNode: React.FC<NodeProps<NodoScrum>> = memo(({ data, selected }
         ${esFoco ? 'border-amber-400 ring-4 ring-amber-400/20 scale-[1.03] shadow-amber-500/10' : 'border-amber-500/30 hover:border-amber-500/60'}
       `}
     >
-      {/* Handles invisibles para una estética limpia sin puntos visibles */}
-      <Handle
-        type="target"
-        position={Position.Top}
-        className="!opacity-0 !pointer-events-none !w-2 !h-2 !border-0"
-      />
+      <HandlesConSeparacion />
 
       <div className="flex items-center justify-between mb-2">
         <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20">
@@ -60,12 +56,6 @@ export const RoleNode: React.FC<NodeProps<NodoScrum>> = memo(({ data, selected }
           Ver ficha &rarr;
         </span>
       </div>
-
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className="!opacity-0 !pointer-events-none !w-2 !h-2 !border-0"
-      />
     </div>
   );
 });

@@ -56,6 +56,23 @@ describe('Modelo de Datos Scrum (scrumData)', () => {
     expect(conexiones).toContain('artifact-sprint-backlog->artifact-increment');
     expect(conexiones).toContain('artifact-increment->event-sprint-review');
   });
+
+  it('todas las aristas deben tener sourceHandle y targetHandle separados para evitar solapamientos', () => {
+    aristasScrum.forEach((a) => {
+      expect(a.sourceHandle).toBeDefined();
+      expect(a.targetHandle).toBeDefined();
+    });
+
+    // Validar que el Product Owner use handles distintos para sus dos salidas
+    const aristasPO = aristasScrum.filter((a) => a.source === 'role-product-owner');
+    const handlesPO = aristasPO.map((a) => a.sourceHandle);
+    expect(new Set(handlesPO).size).toBe(aristasPO.length);
+
+    // Validar que los Developers usen handles distintos para sus dos salidas
+    const aristasDevs = aristasScrum.filter((a) => a.source === 'role-developers');
+    const handlesDevs = aristasDevs.map((a) => a.sourceHandle);
+    expect(new Set(handlesDevs).size).toBe(aristasDevs.length);
+  });
 });
 
 describe('Utilidades de Filtrado y Opacidad (filtroUtilidades)', () => {

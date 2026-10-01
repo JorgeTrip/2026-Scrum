@@ -41,9 +41,11 @@ function crearArista(
 }
 
 export const aristasScrum: AristaScrum[] = [
-  // 1. Relaciones Estratégicas Iniciales con corredores independientes (18px vs 42px)
+  // 1. Relaciones Estratégicas y Product Discovery (Vision ➔ Impact Mapping ➔ Story Mapping ➔ Backlog)
   crearArista('edge-po-to-vision', 'role-product-owner', 'artifact-vision-board', 'Crea la visión', '#F59E0B', 'bottom-left', 'top-center', 18, true),
-  crearArista('edge-vision-to-pb', 'artifact-vision-board', 'artifact-product-backlog', 'Nutre el Product Goal', '#10B981', 'right-center', 'left-center', 24, true),
+  crearArista('edge-vision-to-im', 'artifact-vision-board', 'artifact-impact-mapping', 'Define metas y actores', '#10B981', 'right-center', 'left-center', 20, true),
+  crearArista('edge-im-to-usm', 'artifact-impact-mapping', 'artifact-user-story-mapping', 'Mapea user journey', '#10B981', 'right-center', 'left-center', 22, true),
+  crearArista('edge-usm-to-pb', 'artifact-user-story-mapping', 'artifact-product-backlog', 'Alimenta y dimensiona PB', '#10B981', 'right-center', 'left-center', 24, true),
   crearArista('edge-po-to-pb', 'role-product-owner', 'artifact-product-backlog', 'Gestiona y prioriza', '#F59E0B', 'bottom-center', 'top-left', 42),
   crearArista('edge-po-to-planning', 'role-product-owner', 'event-sprint-planning', 'Propone el foco de valor', '#F59E0B', 'bottom-right', 'top-left', 38, true),
   crearArista('edge-po-to-devs', 'role-product-owner', 'role-developers', 'Clarifica alcance y criterios', '#F59E0B', 'right-center', 'left-center', 14, true),

@@ -4,8 +4,8 @@ import { calcularElementosVisiblesHistoria } from '../src/hooks/useHistoriaScrum
 import { nodosScrum, aristasScrum } from '../src/data/scrumData';
 
 describe('Capítulos de la Historia de Scrum (datosHistoria)', () => {
-  it('debe tener exactamente 8 capítulos cronológicos comenzando con el prólogo', () => {
-    expect(capitulosHistoria).toHaveLength(8);
+  it('debe tener exactamente 10 capítulos cronológicos comenzando con el prólogo', () => {
+    expect(capitulosHistoria).toHaveLength(10);
   });
 
   it('el primer capítulo (prólogo) debe involucrar al Product Owner y al Product Vision Board', () => {
@@ -14,13 +14,13 @@ describe('Capítulos de la Historia de Scrum (datosHistoria)', () => {
     expect(primerPaso.idsNodosNuevos).toContain('artifact-vision-board');
   });
 
-  it('el segundo capítulo debe incorporar el Product Backlog', () => {
+  it('el segundo capítulo debe incorporar Impact Mapping', () => {
     const segundoPaso = capitulosHistoria[1];
-    expect(segundoPaso.idsNodosNuevos).toContain('artifact-product-backlog');
+    expect(segundoPaso.idsNodosNuevos).toContain('artifact-impact-mapping');
   });
 
   it('el último capítulo debe contemplar la Sprint Retrospective', () => {
-    const ultimoPaso = capitulosHistoria[7];
+    const ultimoPaso = capitulosHistoria[9];
     expect(ultimoPaso.idsNodosNuevos).toContain('event-sprint-retrospective');
   });
 });
@@ -50,7 +50,7 @@ describe('Lógica de Revelación Progresiva (calcularElementosVisiblesHistoria)'
     const { nodosVisibles } = calcularElementosVisiblesHistoria(
       nodosScrum,
       aristasScrum,
-      7
+      9
     );
 
     expect(nodosVisibles.length).toBe(nodosScrum.length);

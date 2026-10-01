@@ -23,11 +23,13 @@ describe('Modelo de Datos Scrum (scrumData)', () => {
     expect(idsEventos).toContain('event-sprint-retrospective');
   });
 
-  it('debe contener el Product Vision Board y los 3 artefactos oficiales', () => {
+  it('debe contener el Product Vision Board, Impact Mapping, User Story Mapping y los 3 artefactos oficiales', () => {
     const artefactos = nodosScrum.filter((n) => n.data.category === 'artifact');
-    expect(artefactos).toHaveLength(4);
+    expect(artefactos).toHaveLength(6);
     const idsArtefactos = artefactos.map((a) => a.id);
     expect(idsArtefactos).toContain('artifact-vision-board');
+    expect(idsArtefactos).toContain('artifact-impact-mapping');
+    expect(idsArtefactos).toContain('artifact-user-story-mapping');
     expect(idsArtefactos).toContain('artifact-product-backlog');
     expect(idsArtefactos).toContain('artifact-sprint-backlog');
     expect(idsArtefactos).toContain('artifact-increment');
@@ -46,10 +48,12 @@ describe('Modelo de Datos Scrum (scrumData)', () => {
     expect(inc?.data.details.outputs?.some((o) => o.includes('Definition of Done'))).toBe(true);
   });
 
-  it('debe contener las aristas clave del flujo metodológico', () => {
+  it('debe contener las aristas clave del flujo metodológico y product discovery', () => {
     const conexiones = aristasScrum.map((e) => `${e.source}->${e.target}`);
     expect(conexiones).toContain('role-product-owner->artifact-vision-board');
-    expect(conexiones).toContain('artifact-vision-board->artifact-product-backlog');
+    expect(conexiones).toContain('artifact-vision-board->artifact-impact-mapping');
+    expect(conexiones).toContain('artifact-impact-mapping->artifact-user-story-mapping');
+    expect(conexiones).toContain('artifact-user-story-mapping->artifact-product-backlog');
     expect(conexiones).toContain('artifact-product-backlog->event-sprint-planning');
     expect(conexiones).toContain('event-sprint-planning->artifact-sprint-backlog');
     expect(conexiones).toContain('role-developers->event-daily-scrum');

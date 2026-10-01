@@ -28,17 +28,59 @@ export const nodosArtefactos: NodoScrum[] = [
     }
   },
   {
-    id: 'artifact-product-backlog',
+    id: 'artifact-impact-mapping',
+    type: 'artifactNode',
+    position: { x: 215, y: 624 },
+    data: {
+      id: 'artifact-impact-mapping',
+      label: 'Impact Mapping',
+      category: 'artifact',
+      summary: 'Técnica gráfica colaborativa que conecta metas de negocio con el comportamiento de actores y los entregables necesarios.',
+      akas: ['Mapeo de Impacto', 'Goal-Oriented Mapping', 'Adzic Mapping'],
+      details: {
+        inputs: ['Product Vision Board', 'Metas estratégicas de negocio', 'Investigación de usuarios'],
+        outputs: [
+          'Compromiso: Hipótesis de Impacto Validadas',
+          'Insumos priorizados para actividades de usuario y entregables clave'
+        ],
+        theoreticalBasis:
+          'Desarrollado por Gojko Adzic; previene la trampa del feature-factory enfocando el esfuerzo únicamente en cambios de comportamiento medibles que mueven métricas de negocio.'
+      }
+    }
+  },
+  {
+    id: 'artifact-user-story-mapping',
     type: 'artifactNode',
     position: { x: 460, y: 622 },
+    data: {
+      id: 'artifact-user-story-mapping',
+      label: 'User Story Mapping',
+      category: 'artifact',
+      summary: 'Estructura visual bidimensional que organiza las historias de usuario a lo largo del viaje del cliente (Backbone) y prioriza en Slices.',
+      akas: ['Mapa de Historias', 'Story Map', 'Patton Map', 'User Journey Map'],
+      details: {
+        inputs: ['Impact Mapping', 'Entrevistas de usuario', 'Flujo de actividades clave'],
+        outputs: [
+          'Compromiso: Rebanadas de Entrega (Slices)',
+          'Historias de usuario contextualizadas listas para el Product Backlog'
+        ],
+        theoreticalBasis:
+          'Creado por Jeff Patton; erradica la pérdida de contexto del backlog plano organizando las historias a lo largo del viaje del usuario para planificar iteraciones con sentido completo.'
+      }
+    }
+  },
+  {
+    id: 'artifact-product-backlog',
+    type: 'artifactNode',
+    position: { x: 700, y: 620 },
     data: {
       id: 'artifact-product-backlog',
       label: 'Product Backlog',
       category: 'artifact',
-      summary: 'Lista emergente y ordenada de todo lo que se sabe necesario para mejorar el producto.',
+      summary: 'Lista emergente y ordenada de todo lo que se sabe necesario para mejorar el producto, nutrida por el Story Map.',
       akas: ['PBL', 'Pila del Producto', 'Backlog del Producto', 'PBI List'],
       details: {
-        inputs: ['Product Vision Board', 'Visión estratégica', 'Feedback continuo del mercado'],
+        inputs: ['User Story Mapping', 'Visión estratégica', 'Feedback continuo del mercado'],
         outputs: [
           'Compromiso: Product Goal (Objetivo del Producto)',
           'Elementos del Product Backlog (PBI) refinados y ordenados'
@@ -51,7 +93,7 @@ export const nodosArtefactos: NodoScrum[] = [
   {
     id: 'artifact-sprint-backlog',
     type: 'artifactNode',
-    position: { x: 886, y: 619 },
+    position: { x: 960, y: 619 },
     data: {
       id: 'artifact-sprint-backlog',
       label: 'Sprint Backlog',
@@ -72,7 +114,7 @@ export const nodosArtefactos: NodoScrum[] = [
   {
     id: 'artifact-increment',
     type: 'artifactNode',
-    position: { x: 1303, y: 610 },
+    position: { x: 1300, y: 610 },
     data: {
       id: 'artifact-increment',
       label: 'Increment',

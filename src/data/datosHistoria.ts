@@ -1,6 +1,6 @@
 /**
- * Definición formal de los 8 capítulos narrativos del flujo Scrum (Storytelling).
- * Inicia con el Prólogo Estratégico del Product Vision Board.
+ * Definición formal de los 10 capítulos narrativos del flujo Scrum (Storytelling).
+ * Incorpora el ciclo canónico de Product Discovery: Vision Board ➔ Impact Mapping ➔ User Story Mapping ➔ Product Backlog.
  */
 
 export interface CapituloHistoria {
@@ -29,16 +29,36 @@ export const capitulosHistoria: CapituloHistoria[] = [
   {
     id: 1,
     pasoNumero: 2,
-    titulo: 'El Product Backlog y el Product Goal',
-    subtitulo: 'La lista ordenada y emergente de valor',
+    titulo: 'Alineación de Impacto: Impact Mapping',
+    subtitulo: 'Metas, Actores, Impactos y Entregables',
     narrativa:
-      'Con la visión estratégica consolidada, el Product Owner define el Product Goal (Objetivo del Producto a largo plazo) y crea el Product Backlog: la única fuente ordenada y transparente de trabajo que el equipo emprenderá.',
-    idsNodosNuevos: ['artifact-product-backlog'],
-    idsDestacados: ['artifact-product-backlog', 'role-product-owner']
+      'Antes de generar historias aisladas, se aplica Impact Mapping (Gojko Adzic). Conecta el objetivo estratégico de negocio con los actores clave, los cambios de comportamiento medibles que se buscan provocar y las hipótesis de entregables necesarias, evitando construir funcionalidades que no agreguen valor real.',
+    idsNodosNuevos: ['artifact-impact-mapping'],
+    idsDestacados: ['artifact-impact-mapping', 'artifact-vision-board']
   },
   {
     id: 2,
     pasoNumero: 3,
+    titulo: 'Descubrimiento y User Journey: User Story Mapping',
+    subtitulo: 'Estructuración Bidimensional del Viaje del Usuario',
+    narrativa:
+      'Con los impactos definidos, se construye el User Story Mapping (Jeff Patton). Se mapea la columna vertebral del viaje del cliente de izquierda a derecha (actividades y pasos) y se desglosan verticalmente las historias de usuario, erradicando la pérdida de contexto del backlog plano y permitiendo definir cortes de valor.',
+    idsNodosNuevos: ['artifact-user-story-mapping'],
+    idsDestacados: ['artifact-user-story-mapping', 'artifact-impact-mapping']
+  },
+  {
+    id: 3,
+    pasoNumero: 4,
+    titulo: 'El Product Backlog y el Product Goal',
+    subtitulo: 'La lista ordenada y emergente de valor',
+    narrativa:
+      'Nutrido directamente de las historias descubiertas en el Story Map, el Product Owner formaliza el Product Goal (Objetivo del Producto a largo plazo) y consolida el Product Backlog: la única fuente ordenada y transparente de trabajo que el equipo emprenderá.',
+    idsNodosNuevos: ['artifact-product-backlog'],
+    idsDestacados: ['artifact-product-backlog', 'artifact-user-story-mapping', 'role-product-owner']
+  },
+  {
+    id: 4,
+    pasoNumero: 5,
     titulo: 'El Equipo Scrum y el Contenedor',
     subtitulo: 'Developers, Scrum Master & Sprint',
     narrativa:
@@ -47,8 +67,8 @@ export const capitulosHistoria: CapituloHistoria[] = [
     idsDestacados: ['role-developers', 'role-scrum-master', 'event-sprint']
   },
   {
-    id: 3,
-    pasoNumero: 4,
+    id: 5,
+    pasoNumero: 6,
     titulo: 'Sprint Planning: El Compromiso',
     subtitulo: 'Definición del Sprint Goal & Sprint Backlog',
     narrativa:
@@ -57,8 +77,8 @@ export const capitulosHistoria: CapituloHistoria[] = [
     idsDestacados: ['event-sprint-planning', 'artifact-sprint-backlog']
   },
   {
-    id: 4,
-    pasoNumero: 5,
+    id: 6,
+    pasoNumero: 7,
     titulo: 'Ejecución Diaria y Sincronización',
     subtitulo: 'La Daily Scrum de 15 minutos',
     narrativa:
@@ -67,8 +87,8 @@ export const capitulosHistoria: CapituloHistoria[] = [
     idsDestacados: ['event-daily-scrum', 'role-developers']
   },
   {
-    id: 5,
-    pasoNumero: 6,
+    id: 7,
+    pasoNumero: 8,
     titulo: 'Nacimiento del Incremento Terminado',
     subtitulo: 'Compromiso: Definition of Done (DoD)',
     narrativa:
@@ -77,8 +97,8 @@ export const capitulosHistoria: CapituloHistoria[] = [
     idsDestacados: ['artifact-increment']
   },
   {
-    id: 6,
-    pasoNumero: 7,
+    id: 8,
+    pasoNumero: 9,
     titulo: 'Sprint Review: Inspección de Valor',
     subtitulo: 'Colaboración activa con los Interesados',
     narrativa:
@@ -87,8 +107,8 @@ export const capitulosHistoria: CapituloHistoria[] = [
     idsDestacados: ['event-sprint-review', 'artifact-increment']
   },
   {
-    id: 7,
-    pasoNumero: 8,
+    id: 9,
+    pasoNumero: 10,
     titulo: 'Sprint Retrospective: La Mejora Continua',
     subtitulo: 'Cierre del ciclo y adaptación al próximo Sprint',
     narrativa:

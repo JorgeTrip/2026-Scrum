@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { NodeToolbar, Position, type NodeProps } from '@xyflow/react';
-import { Layers, ListOrdered, CheckCircle2, BookmarkCheck, Compass } from 'lucide-react';
+import { Layers, ListOrdered, CheckCircle2, BookmarkCheck, Compass, Target, Map } from 'lucide-react';
 import type { NodoScrum } from '../../types/scrum';
 import { HandlesConSeparacion } from './HandlesConSeparacion';
 import { TooltipFichaTecnica } from './TooltipFichaTecnica';
@@ -18,6 +18,10 @@ export const ArtifactNode: React.FC<NodeProps<NodoScrum>> = memo(({ data, select
     switch (data.id) {
       case 'artifact-vision-board':
         return <Compass className="w-5 h-5 text-emerald-400" />;
+      case 'artifact-impact-mapping':
+        return <Target className="w-5 h-5 text-emerald-400" />;
+      case 'artifact-user-story-mapping':
+        return <Map className="w-5 h-5 text-emerald-400" />;
       case 'artifact-product-backlog':
         return <ListOrdered className="w-5 h-5 text-emerald-400" />;
       case 'artifact-sprint-backlog':

@@ -40,7 +40,10 @@ const estadosPredeterminadosAristas: Record<string, EstadoEtiquetaArista> = {
   'edge-sm-to-increment': { t: 0.5, desvio: 0 },
   'edge-po-to-planning': { t: 0.5, desvio: 0 },
   'edge-po-to-devs': { t: 0.5, desvio: 0 },
-  'edge-po-to-review': { t: 0.5, desvio: 0 }
+  'edge-po-to-review': { t: 0.5, desvio: 0 },
+  'edge-vision-to-im': { t: 0.5, desvio: 0 },
+  'edge-im-to-usm': { t: 0.5, desvio: 0 },
+  'edge-usm-to-pb': { t: 0.5, desvio: 0 }
 };
 
 export function useArrastreArista({

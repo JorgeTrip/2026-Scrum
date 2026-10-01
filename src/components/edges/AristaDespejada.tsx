@@ -6,9 +6,7 @@ import {
   type EdgeProps
 } from '@xyflow/react';
 import {
-  construirRutaSmoothStepConDesvio,
-  obtenerPuntoEnTrayectoriaPorT,
-  type Punto2D
+  construirRutaSmoothStepConDesvio
 } from '../../utils/trayectoriaUtilidades';
 import { useArrastreArista } from '../../hooks/useArrastreArista';
 import { GuiaDestinoArista } from './GuiaDestinoArista';
@@ -21,6 +19,7 @@ interface DatosAristaPersonalizada {
 /**
  * Componente de arista con halo de despeje, arrastre magnético a lo largo de la trayectoria
  * y capacidad elástica de empujar la línea de relación hacia los lados o arriba/abajo.
+ * Utiliza una única etiqueta que se levanta al presionar y acompaña al ratón hasta su destino.
  */
 export const AristaDespejada: React.FC<EdgeProps> = ({
   id,
@@ -41,11 +40,12 @@ export const AristaDespejada: React.FC<EdgeProps> = ({
   const { screenToFlowPosition } = useReactFlow();
 
   const {
-    estadoArista,
     desvioEfectivo,
+    estaPresionada,
     estaArrastrando,
     destinoProyectado,
     cursorFlotante,
+    puntoBaseCurva,
     iniciarArrastreEtiqueta,
     moverEtiqueta,
     finalizarArrastreEtiqueta
@@ -72,23 +72,13 @@ export const AristaDespejada: React.FC<EdgeProps> = ({
     });
   }, [sourceX, sourceY, targetX, targetY, desvioEfectivo, radioBorde, offsetPersonalizado]);
 
-  // Calcula la posición exacta de la etiqueta sobre la curva según su parámetro relativo t
-  const puntoSobreCurva: Punto2D = useMemo(() => {
-    if (refRuta.current) {
-      return obtenerPuntoEnTrayectoriaPorT(refRuta.current, estadoArista.t);
-    }
-    // Fallback matemático antes del primer tick de medición del DOM
-    const t = estadoArista.t;
-    const dx = targetX - sourceX;
-    const dy = targetY - sourceY;
-    const esH = Math.abs(dx) >= Math.abs(dy);
-    const mx = sourceX + dx * t;
-    const my = sourceY + dy * t + (esH ? desvioEfectivo : 0);
-    return { x: Math.round(mx), y: Math.round(my) };
-  }, [estadoArista.t, sourceX, sourceY, targetX, targetY, desvioEfectivo]);
-
-  const renderX = estaArrastrando && cursorFlotante ? cursorFlotante.x : puntoSobreCurva.x;
-  const renderY = estaArrastrando && cursorFlotante ? cursorFlotante.y : puntoSobreCurva.y;
+  // Posición de la etiqueta: se eleva sutilmente al presionar y acompaña al ratón al arrastrar
+  const renderX = estaArrastrando && cursorFlotante ? cursorFlotante.x : puntoBaseCurva.x;
+  const renderY = estaArrastrando && cursorFlotante
+    ? cursorFlotante.y
+    : estaPresionada
+    ? puntoBaseCurva.y - 3
+    : puntoBaseCurva.y;
 
   return (
     <>
@@ -107,16 +97,15 @@ export const AristaDespejada: React.FC<EdgeProps> = ({
       {/* Línea principal coloreada */}
       <BaseEdge id={id} path={edgePath} style={style} markerEnd={markerEnd} />
 
-      {/* Previsualización predictiva: Anclaje y silueta fantasma en el destino proyectado */}
-      {estaArrastrando && destinoProyectado && cursorFlotante && label && (
+      {/* Punto de anclaje de destino conservado y guía elástica hacia la etiqueta */}
+      {(estaArrastrando || estaPresionada) && destinoProyectado && (
         <GuiaDestinoArista
-          label={String(label)}
           puntoDestino={destinoProyectado}
-          puntoCursor={cursorFlotante}
+          puntoCursor={{ x: renderX, y: renderY }}
         />
       )}
 
-      {/* Etiqueta interactiva: Se desliza longitudinalmente o empuja la relación perpendicularmente */}
+      {/* Única etiqueta interactiva: se levanta al presionar y viaja con el puntero */}
       {label && (
         <EdgeLabelRenderer>
           <div
@@ -130,8 +119,8 @@ export const AristaDespejada: React.FC<EdgeProps> = ({
               pointerEvents: 'all'
             }}
             title="Arrastra a lo largo para acomodarla, o perpendicularmente para empujar la línea de relación"
-            className={`nodrag nopan nowheel px-2.5 py-1 rounded-xl text-[10px] font-bold shadow-xl backdrop-blur-md whitespace-nowrap z-30 select-none transition-all ${
-              estaArrastrando
+            className={`nodrag nopan nowheel px-2.5 py-1 rounded-xl text-[10px] font-bold shadow-xl backdrop-blur-md whitespace-nowrap z-30 select-none transition-all duration-75 ${
+              estaArrastrando || estaPresionada
                 ? 'cursor-grabbing bg-indigo-600/95 text-white border-2 border-indigo-400 scale-105 shadow-2xl shadow-indigo-500/50'
                 : 'cursor-grab bg-[#1C1C1E]/95 hover:bg-[#252528] text-zinc-200 border border-zinc-700/80 hover:border-zinc-500'
             }`}

@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import {
   proyectarParametroEnTrayectoria,
+  obtenerPuntoEnTrayectoriaPorT,
   type Punto2D
 } from '../utils/trayectoriaUtilidades';
 import {
@@ -9,7 +10,7 @@ import {
   type EstadoEtiquetaArista
 } from '../utils/persistenciaPosiciones';
 
-const UMBRAL_ARRASTRE_PX = 6;
+const UMBRAL_MOVIMIENTO_PX = 3;
 
 interface PropiedadesArrastreArista {
   id: string;
@@ -22,8 +23,8 @@ interface PropiedadesArrastreArista {
 }
 
 /**
- * Hook para gestionar el arrastre de etiquetas y la deformación elástica de relaciones.
- * Permite deslizar a lo largo de la línea (t) o empujarla perpendicularmente (desvío).
+ * Hook para gestionar la elevación de etiqueta, arrastre fluido y deformación elástica de aristas.
+ * Garantiza que exista una única etiqueta que se levanta al presionar y acompaña al ratón hasta su destino.
  */
 export function useArrastreArista({
   id,
@@ -38,6 +39,7 @@ export function useArrastreArista({
     return obtenerEstadoEtiqueta(id) ?? { t: 0.5, desvio: 0 };
   });
 
+  const [estaPresionada, setEstaPresionada] = useState(false);
   const [estaArrastrando, setEstaArrastrando] = useState(false);
   const [destinoProyectado, setDestinoProyectado] = useState<Punto2D | null>(null);
   const [cursorFlotante, setCursorFlotante] = useState<Punto2D | null>(null);
@@ -53,6 +55,8 @@ export function useArrastreArista({
       setDesvioTemporal(null);
       setDestinoProyectado(null);
       setCursorFlotante(null);
+      setEstaPresionada(false);
+      setEstaArrastrando(false);
     };
     window.addEventListener('restablecer-posiciones-scrum', alRestablecer);
     return () => window.removeEventListener('restablecer-posiciones-scrum', alRestablecer);
@@ -62,13 +66,29 @@ export function useArrastreArista({
   const dy = targetY - sourceY;
   const esHorizontal = Math.abs(dx) >= Math.abs(dy);
 
-  const iniciarArrastreEtiqueta = useCallback((e: React.PointerEvent) => {
-    if (e.button !== 0) return;
-    e.stopPropagation();
-    inicioPointerRef.current = { x: e.clientX, y: e.clientY };
-    superoUmbralRef.current = false;
-    (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
-  }, []);
+  // Calcula posición actual sobre la curva
+  const puntoBaseCurva: Punto2D = (() => {
+    if (refRuta.current) {
+      return obtenerPuntoEnTrayectoriaPorT(refRuta.current, estadoArista.t);
+    }
+    const t = estadoArista.t;
+    const mx = sourceX + dx * t;
+    const my = sourceY + dy * t + (esHorizontal ? (estadoArista.desvio ?? 0) : 0);
+    return { x: Math.round(mx), y: Math.round(my) };
+  })();
+
+  const iniciarArrastreEtiqueta = useCallback(
+    (e: React.PointerEvent) => {
+      if (e.button !== 0) return;
+      e.stopPropagation();
+      inicioPointerRef.current = { x: e.clientX, y: e.clientY };
+      superoUmbralRef.current = false;
+      setEstaPresionada(true);
+      setDestinoProyectado(puntoBaseCurva);
+      (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
+    },
+    [puntoBaseCurva]
+  );
 
   const moverEtiqueta = useCallback(
     (e: React.PointerEvent) => {
@@ -78,7 +98,7 @@ export function useArrastreArista({
       const distX = e.clientX - inicioPointerRef.current.x;
       const distY = e.clientY - inicioPointerRef.current.y;
       if (!superoUmbralRef.current) {
-        if (Math.hypot(distX, distY) < UMBRAL_ARRASTRE_PX) return;
+        if (Math.hypot(distX, distY) < UMBRAL_MOVIMIENTO_PX) return;
         superoUmbralRef.current = true;
         setEstaArrastrando(true);
       }
@@ -86,7 +106,7 @@ export function useArrastreArista({
       const puntoFlujo = screenToFlowPosition({ x: e.clientX, y: e.clientY });
       const { t, punto } = proyectarParametroEnTrayectoria(refRuta.current, puntoFlujo);
 
-      // Calcula desvío perpendicular para empujar la línea de relación
+      // Desvío perpendicular para deformar y empujar la línea de relación
       const desvioActual = esHorizontal
         ? puntoFlujo.y - (sourceY + targetY) / 2
         : puntoFlujo.x - (sourceX + targetX) / 2;
@@ -102,7 +122,7 @@ export function useArrastreArista({
   const finalizarArrastreEtiqueta = useCallback(
     (e: React.PointerEvent) => {
       e.stopPropagation();
-      if (superoUmbralRef.current) {
+      if (superoUmbralRef.current && destinoProyectado) {
         const nuevoEstado: EstadoEtiquetaArista = {
           t: tTemporalRef.current,
           desvio: desvioTemporal ?? estadoArista.desvio ?? 0
@@ -110,6 +130,7 @@ export function useArrastreArista({
         setEstadoArista(nuevoEstado);
         guardarEstadoEtiqueta(id, nuevoEstado);
       }
+      setEstaPresionada(false);
       setEstaArrastrando(false);
       setDestinoProyectado(null);
       setCursorFlotante(null);
@@ -117,7 +138,7 @@ export function useArrastreArista({
       inicioPointerRef.current = null;
       superoUmbralRef.current = false;
     },
-    [desvioTemporal, estadoArista.desvio, id]
+    [destinoProyectado, desvioTemporal, estadoArista.desvio, id]
   );
 
   const desvioEfectivo = desvioTemporal ?? estadoArista.desvio ?? 0;
@@ -125,9 +146,11 @@ export function useArrastreArista({
   return {
     estadoArista,
     desvioEfectivo,
+    estaPresionada,
     estaArrastrando,
     destinoProyectado,
     cursorFlotante,
+    puntoBaseCurva,
     iniciarArrastreEtiqueta,
     moverEtiqueta,
     finalizarArrastreEtiqueta

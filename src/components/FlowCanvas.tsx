@@ -8,13 +8,15 @@ import {
   applyNodeChanges,
   type OnNodesChange,
   type NodeMouseHandler,
-  type NodeTypes
+  type NodeTypes,
+  type EdgeTypes
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
 import { RoleNode } from './nodes/RoleNode';
 import { EventNode } from './nodes/EventNode';
 import { ArtifactNode } from './nodes/ArtifactNode';
+import { AristaDespejada } from './edges/AristaDespejada';
 import { Swimlanes } from './Swimlanes';
 import type { NodoScrum, AristaScrum, DatosNodoScrum } from '../types/scrum';
 
@@ -25,8 +27,7 @@ interface FlowCanvasProps {
 }
 
 /**
- * Contenedor principal de React Flow con nodos interactivos y arrastrables.
- * Mantiene las posiciones personalizadas por el usuario para evitar superposiciones de aristas.
+ * Contenedor principal de React Flow con nodos interactivos, arrastrables y aristas despejadas.
  */
 export const FlowCanvas: React.FC<FlowCanvasProps> = ({ nodos, aristas, onSeleccionarNodo }) => {
   const [nodosInternos, setNodosInternos] = useState<NodoScrum[]>(nodos);
@@ -55,6 +56,13 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({ nodos, aristas, onSelecc
     []
   );
 
+  const edgeTypes = useMemo<EdgeTypes>(
+    () => ({
+      despejada: AristaDespejada
+    }),
+    []
+  );
+
   const manejarClickEnNodo: NodeMouseHandler<NodoScrum> = useCallback(
     (_evento, nodo) => {
       onSeleccionarNodo(nodo.data);
@@ -68,6 +76,7 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({ nodos, aristas, onSelecc
         nodes={nodosInternos}
         edges={aristas}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         onNodesChange={onNodesChange}
         onNodeClick={manejarClickEnNodo}
         nodesDraggable={true}

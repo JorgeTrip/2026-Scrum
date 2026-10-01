@@ -8,9 +8,8 @@ interface TooltipFichaTecnicaProps {
 }
 
 /**
- * Tooltip enriquecido que emerge directamente del nodo seleccionado en el lienzo.
- * Cuenta con 'nowheel nopan nodrag' y detención de propagación de eventos wheel
- * para que la rueda del ratón desplace el contenido interno sin alterar el zoom general.
+ * Tooltip enriquecido con tipografía ampliada para máxima legibilidad.
+ * Emerge directamente del nodo y aísla el scroll interno para no afectar el zoom.
  */
 export const TooltipFichaTecnica: React.FC<TooltipFichaTecnicaProps> = ({ datos, onCerrar }) => {
   const { label, category, summary, details } = datos;
@@ -18,11 +17,11 @@ export const TooltipFichaTecnica: React.FC<TooltipFichaTecnicaProps> = ({ datos,
   const obtenerInfoCategoria = (cat: CategoriaScrum) => {
     switch (cat) {
       case 'role':
-        return { texto: 'Rol Scrum', icono: <Users className="w-3.5 h-3.5 text-amber-400" />, badge: 'bg-amber-500/10 text-amber-400 border-amber-500/30' };
+        return { texto: 'Rol Scrum', icono: <Users className="w-4 h-4 text-amber-400" />, badge: 'bg-amber-500/15 text-amber-300 border-amber-500/40' };
       case 'event':
-        return { texto: 'Ceremonia', icono: <Calendar className="w-3.5 h-3.5 text-indigo-400" />, badge: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30' };
+        return { texto: 'Ceremonia', icono: <Calendar className="w-4 h-4 text-indigo-400" />, badge: 'bg-indigo-500/15 text-indigo-300 border-indigo-500/40' };
       case 'artifact':
-        return { texto: 'Artefacto', icono: <Layers className="w-3.5 h-3.5 text-emerald-400" />, badge: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' };
+        return { texto: 'Artefacto', icono: <Layers className="w-4 h-4 text-emerald-400" />, badge: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/40' };
     }
   };
 
@@ -32,57 +31,57 @@ export const TooltipFichaTecnica: React.FC<TooltipFichaTecnicaProps> = ({ datos,
     <div
       onClick={(e) => e.stopPropagation()}
       onWheel={(e) => e.stopPropagation()}
-      className="nowheel nopan nodrag w-80 md:w-96 bg-[#1C1C1E]/98 backdrop-blur-2xl border border-zinc-700/90 rounded-2xl p-4 shadow-2xl shadow-black/90 text-zinc-200 text-xs select-text cursor-default animate-in fade-in zoom-in-95 duration-200"
+      className="nowheel nopan nodrag w-96 md:w-[430px] max-w-[92vw] bg-[#1C1C1E]/98 backdrop-blur-2xl border border-zinc-700 rounded-2xl p-5 shadow-2xl shadow-black/90 text-zinc-200 select-text cursor-default animate-in fade-in zoom-in-95 duration-200"
     >
       {/* Cabecera del Tooltip */}
-      <div className="flex items-start justify-between pb-2.5 mb-2.5 border-b border-zinc-800">
+      <div className="flex items-start justify-between pb-3 mb-3 border-b border-zinc-800">
         <div>
-          <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border ${infoCat.badge} mb-1`}>
+          <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border ${infoCat.badge} mb-1.5`}>
             {infoCat.icono}
             <span>{infoCat.texto}</span>
           </div>
-          <h4 className="text-sm font-bold text-white tracking-tight">{label}</h4>
+          <h4 className="text-base font-extrabold text-white tracking-tight">{label}</h4>
         </div>
 
         <button
           onClick={onCerrar}
           aria-label="Cerrar ficha técnica"
-          className="p-1 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+          className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
         >
           <X className="w-4 h-4" />
         </button>
       </div>
 
-      {/* Contenido desplazable con aislamiento de rueda de zoom */}
+      {/* Contenido desplazable con tipografía ampliada */}
       <div
         onWheel={(e) => e.stopPropagation()}
-        className="nowheel space-y-3 max-h-64 overflow-y-auto pr-1"
+        className="nowheel space-y-4 max-h-72 overflow-y-auto pr-1.5 text-xs md:text-sm"
       >
-        {/* Resumen */}
+        {/* Resumen Ejecutivo */}
         <div>
-          <p className="text-[11px] text-zinc-300 leading-relaxed bg-zinc-900/60 p-2.5 rounded-xl border border-zinc-800/80">
+          <p className="text-xs md:text-sm text-zinc-200 leading-relaxed bg-zinc-900/70 p-3 rounded-xl border border-zinc-800/80">
             {summary}
           </p>
         </div>
 
         {/* Timebox si aplica */}
         {details.timebox && (
-          <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-indigo-950/30 border border-indigo-500/30 text-indigo-300 font-mono text-[11px]">
-            <Clock className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
-            <span className="truncate">{details.timebox}</span>
+          <div className="flex items-center gap-2 p-2.5 rounded-xl bg-indigo-950/30 border border-indigo-500/30 text-indigo-300 font-mono text-xs font-semibold">
+            <Clock className="w-4 h-4 text-indigo-400 shrink-0" />
+            <span>{details.timebox}</span>
           </div>
         )}
 
         {/* Responsabilidades */}
         {details.responsibilities && details.responsibilities.length > 0 && (
           <div>
-            <span className="font-bold text-[10px] uppercase text-zinc-400 tracking-wider block mb-1">
-              Responsabilidades
+            <span className="font-extrabold text-xs uppercase text-zinc-300 tracking-wider block mb-1.5">
+              Responsabilidades Principales
             </span>
-            <ul className="space-y-1">
+            <ul className="space-y-1.5">
               {details.responsibilities.map((r, i) => (
-                <li key={i} className="flex items-start gap-1.5 text-[11px] text-zinc-300">
-                  <CheckCircle className="w-3 h-3 text-amber-400 shrink-0 mt-0.5" />
+                <li key={i} className="flex items-start gap-2 text-xs text-zinc-200 leading-relaxed bg-zinc-900/40 p-2 rounded-lg border border-zinc-800/60">
+                  <CheckCircle className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
                   <span>{r}</span>
                 </li>
               ))}
@@ -93,13 +92,13 @@ export const TooltipFichaTecnica: React.FC<TooltipFichaTecnicaProps> = ({ datos,
         {/* Insumos / Entradas */}
         {details.inputs && details.inputs.length > 0 && (
           <div>
-            <span className="font-bold text-[10px] uppercase text-zinc-400 tracking-wider block mb-1">
-              Entradas
+            <span className="font-extrabold text-xs uppercase text-zinc-300 tracking-wider block mb-1.5">
+              Entradas e Insumos
             </span>
-            <div className="space-y-1">
+            <div className="space-y-1.5">
               {details.inputs.map((inp, i) => (
-                <div key={i} className="flex items-center gap-1.5 text-[11px] text-zinc-400">
-                  <ArrowRightCircle className="w-3 h-3 text-zinc-500 shrink-0" />
+                <div key={i} className="flex items-center gap-2 p-2 rounded-lg bg-zinc-900/40 border border-zinc-800/60 text-xs text-zinc-300">
+                  <ArrowRightCircle className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
                   <span>{inp}</span>
                 </div>
               ))}
@@ -110,13 +109,13 @@ export const TooltipFichaTecnica: React.FC<TooltipFichaTecnicaProps> = ({ datos,
         {/* Salidas y Compromisos */}
         {details.outputs && details.outputs.length > 0 && (
           <div>
-            <span className="font-bold text-[10px] uppercase text-zinc-400 tracking-wider block mb-1">
+            <span className="font-extrabold text-xs uppercase text-zinc-300 tracking-wider block mb-1.5">
               Compromisos y Entregables
             </span>
-            <div className="space-y-1">
+            <div className="space-y-1.5">
               {details.outputs.map((out, i) => (
-                <div key={i} className="p-2 rounded-lg bg-emerald-950/20 border border-emerald-500/30 text-emerald-300 text-[11px] font-medium flex items-start gap-1.5">
-                  <CheckCircle className="w-3 h-3 text-emerald-400 shrink-0 mt-0.5" />
+                <div key={i} className="p-2.5 rounded-xl bg-emerald-950/25 border border-emerald-500/35 text-emerald-300 text-xs font-medium flex items-start gap-2">
+                  <CheckCircle className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
                   <span>{out}</span>
                 </div>
               ))}
@@ -126,11 +125,11 @@ export const TooltipFichaTecnica: React.FC<TooltipFichaTecnicaProps> = ({ datos,
 
         {/* Fundamentación Teórica */}
         <div className="pt-1">
-          <span className="font-bold text-[10px] uppercase text-zinc-400 tracking-wider flex items-center gap-1 mb-1">
-            <BookOpen className="w-3 h-3" />
+          <span className="font-extrabold text-xs uppercase text-zinc-300 tracking-wider flex items-center gap-1.5 mb-1.5">
+            <BookOpen className="w-3.5 h-3.5 text-zinc-400" />
             Guía Scrum
           </span>
-          <blockquote className="p-2 rounded-lg bg-zinc-950 border-l-2 border-zinc-600 text-[10px] italic text-zinc-400">
+          <blockquote className="p-3 rounded-xl bg-zinc-950/90 border-l-4 border-zinc-500 text-xs italic text-zinc-300 leading-relaxed">
             "{details.theoreticalBasis}"
           </blockquote>
         </div>

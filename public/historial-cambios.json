@@ -1,5 +1,12 @@
 [
   {
+    "hash": "ebe59bd",
+    "mensaje": "feat: Se implementan titulos fijos en swimlanes, modal de historial y pipeline de CI/CD sin conflictos",
+    "autor": "Jorge O. Tripodi",
+    "fecha": "2026-10-01",
+    "tipo": "feat"
+  },
+  {
     "hash": "270189c",
     "mensaje": "fix: Se corrige posicionamiento del modal centrandolo en el viewport con portal",
     "autor": "Jorge O. Tripodi",

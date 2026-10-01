@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { X, BookOpen, CheckCircle2, GraduationCap, ShieldCheck } from 'lucide-react';
+import { X, BookOpen, CheckCircle2, GraduationCap, ShieldCheck, History } from 'lucide-react';
+import { ModalHistorialCambios } from './ModalHistorialCambios';
 
 interface PropsModalAcercaDe {
   abierto: boolean;
@@ -12,6 +13,8 @@ interface PropsModalAcercaDe {
  * de la Guía Oficial de Scrum 2020, la autoría académica y los derechos de autor.
  */
 export const ModalAcercaDe: React.FC<PropsModalAcercaDe> = ({ abierto, alCerrar }) => {
+  const [mostrarHistorial, setMostrarHistorial] = useState(false);
+
   // Manejo de la tecla Escape para accesibilidad
   useEffect(() => {
     if (!abierto) return;
@@ -135,7 +138,15 @@ export const ModalAcercaDe: React.FC<PropsModalAcercaDe> = ({ abierto, alCerrar 
         </div>
 
         {/* Pie del Modal */}
-        <div className="p-4 border-t border-zinc-800 bg-[#252528]/40 flex justify-end">
+        <div className="p-4 border-t border-zinc-800 bg-[#252528]/40 flex items-center justify-between">
+          <button
+            type="button"
+            onClick={() => setMostrarHistorial(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-800/80 hover:bg-zinc-700 text-indigo-300 hover:text-white border border-zinc-700/60 transition-all text-xs font-semibold cursor-pointer active:scale-95"
+          >
+            <History className="w-3.5 h-3.5 text-indigo-400" />
+            <span>Historial de cambios</span>
+          </button>
           <button
             onClick={alCerrar}
             className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs shadow-md shadow-indigo-600/30 transition-all active:scale-95"
@@ -144,6 +155,13 @@ export const ModalAcercaDe: React.FC<PropsModalAcercaDe> = ({ abierto, alCerrar 
           </button>
         </div>
       </div>
+
+      {/* Modal secundario con la bitácora de cambios y commits */}
+      <ModalHistorialCambios
+        abierto={mostrarHistorial}
+        alCerrar={() => setMostrarHistorial(false)}
+        alVolverAcercaDe={() => setMostrarHistorial(false)}
+      />
     </div>
   );
 

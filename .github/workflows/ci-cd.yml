@@ -1,0 +1,117 @@
+name: CI/CD Automatizado Scrum Flow
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    branches:
+      - master
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  # =========================================================================
+  # 1. INTEGRACIÓN CONTINUA (CI): Validación de Pruebas y Compilación Estricta
+  # =========================================================================
+  integracion:
+    name: Pruebas Unitarias y Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio con historial completo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configurar Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Instalar dependencias limpias
+        run: npm ci
+
+      - name: Ejecutar Suite de Pruebas Unitarias (Vitest)
+        run: npm test
+
+      - name: Compilar para producción y generar changelog estático
+        run: npm run build
+
+      - name: Guardar artefacto de producción compilado
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-produccion
+          path: dist/
+
+  # =========================================================================
+  # 2. VERSIONADO SEMÁNTICO Y RELEASES (CD SIN CONFLICTOS DE GIT PUSH)
+  # =========================================================================
+  versionado-y-release:
+    name: Versionado Semántico y Release
+    needs: integracion
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar repositorio con historial completo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configurar Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Determinar siguiente versión semántica
+        id: semver
+        run: node .github/scripts/determinarVersion.mjs
+
+      - name: Crear Git Tag y Release en GitHub (Libre de conflictos en master)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_VERSION: ${{ steps.semver.outputs.version }}
+        run: |
+          echo "Creando etiqueta inmutable y release: $TAG_VERSION"
+          git tag $TAG_VERSION
+          git push origin $TAG_VERSION
+          gh release create $TAG_VERSION \
+            --title "Scrum Flow $TAG_VERSION" \
+            --generate-notes \
+            --notes "Despliegue automatizado por pipeline de CI/CD. Historial accesible interactivamente en la aplicación."
+
+  # =========================================================================
+  # 3. DESPLIEGUE CONTINUO EN GITHUB PAGES (CD)
+  # =========================================================================
+  despliegue-github-pages:
+    name: Despliegue en GitHub Pages
+    needs: integracion
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Descargar artefacto compilado
+        uses: actions/download-artifact@v4
+        with:
+          name: build-produccion
+          path: dist/
+
+      - name: Configurar artefacto para GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/
+
+      - name: Desplegar en GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

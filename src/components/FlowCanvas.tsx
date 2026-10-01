@@ -1,0 +1,98 @@
+import React, { useMemo, useCallback } from 'react';
+import {
+  ReactFlow,
+  Controls,
+  MiniMap,
+  Background,
+  BackgroundVariant,
+  useNodesState,
+  useEdgesState,
+  type NodeMouseHandler,
+  type NodeTypes
+} from '@xyflow/react';
+import '@xyflow/react/dist/style.css';
+
+import { RoleNode } from './nodes/RoleNode';
+import { EventNode } from './nodes/EventNode';
+import { ArtifactNode } from './nodes/ArtifactNode';
+import { Swimlanes } from './Swimlanes';
+import { aristasScrum } from '../data/scrumData';
+import type { NodoScrum, DatosNodoScrum } from '../types/scrum';
+
+interface FlowCanvasProps {
+  nodos: NodoScrum[];
+  onSeleccionarNodo: (datos: DatosNodoScrum) => void;
+}
+
+/**
+ * Contenedor principal del diagrama React Flow con Swimlanes y MiniMap.
+ */
+export const FlowCanvas: React.FC<FlowCanvasProps> = ({ nodos, onSeleccionarNodo }) => {
+  const nodeTypes = useMemo<NodeTypes>(
+    () => ({
+      roleNode: RoleNode as unknown as NodeTypes['roleNode'],
+      eventNode: EventNode as unknown as NodeTypes['eventNode'],
+      artifactNode: ArtifactNode as unknown as NodeTypes['artifactNode']
+    }),
+    []
+  );
+
+  const [, , onNodesChange] = useNodesState<NodoScrum>(nodos);
+  const [edges, , onEdgesChange] = useEdgesState(aristasScrum);
+
+  const manejarClickEnNodo: NodeMouseHandler<NodoScrum> = useCallback(
+    (_evento, nodo) => {
+      onSeleccionarNodo(nodo.data);
+    },
+    [onSeleccionarNodo]
+  );
+
+  return (
+    <div className="relative w-full h-[calc(100vh-4rem)] bg-[#121214]">
+      <ReactFlow<NodoScrum>
+        nodes={nodos}
+        edges={edges}
+        nodeTypes={nodeTypes}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onNodeClick={manejarClickEnNodo}
+        fitView
+        fitViewOptions={{ padding: 0.15 }}
+        minZoom={0.3}
+        maxZoom={1.8}
+        defaultViewport={{ x: 50, y: 30, zoom: 0.85 }}
+        proOptions={{ hideAttribution: true }}
+      >
+        <Background
+          variant={BackgroundVariant.Dots}
+          gap={24}
+          size={1.5}
+          color="#27272a"
+        />
+
+        {/* Carriles horizontales tridimensionales */}
+        <Swimlanes />
+
+        {/* Controles de navegación y encuadre (Fit View) */}
+        <Controls
+          className="!bg-[#1C1C1E] !border !border-zinc-800 !rounded-xl !shadow-xl !overflow-hidden [&>button]:!bg-[#1C1C1E] [&>button]:!border-zinc-800 [&>button]:!text-zinc-300 [&>button:hover]:!bg-zinc-800"
+          showInteractive={false}
+        />
+
+        {/* Mini-mapa en la esquina inferior derecha */}
+        <MiniMap<NodoScrum>
+          nodeStrokeWidth={3}
+          zoomable
+          pannable
+          className="!bg-[#1C1C1E]/95 !border !border-zinc-800 !rounded-2xl !shadow-xl !backdrop-blur-md"
+          nodeColor={(n) => {
+            if (n.data?.category === 'role') return '#F59E0B';
+            if (n.data?.category === 'event') return '#6366F1';
+            return '#10B981';
+          }}
+          maskColor="rgba(18, 18, 20, 0.7)"
+        />
+      </ReactFlow>
+    </div>
+  );
+};

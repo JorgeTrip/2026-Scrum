@@ -6,13 +6,10 @@ import type { CategoriaScrum, DatosNodoScrum } from '../types/scrum';
 
 /**
  * Determina el valor de opacidad de un nodo en base a los criterios de búsqueda y categoría.
- * @param nodo Datos del nodo a evaluar
- * @param categoriaFiltro Categoría seleccionada ('all' o una específica)
- * @param textoBusqueda Cadena de texto para filtrar
- * @returns 1.0 si coincide plenamente, 0.2 si debe atenuarse
+ * Considera títulos, denominaciones alternativas (AKAs), resúmenes y ficha técnica.
  */
 export function calcularOpacidadNodo(
-  nodo: Pick<DatosNodoScrum, 'category' | 'label' | 'summary' | 'details'>,
+  nodo: Pick<DatosNodoScrum, 'category' | 'label' | 'summary' | 'details' | 'akas'>,
   categoriaFiltro: CategoriaScrum | 'all',
   textoBusqueda: string
 ): number {
@@ -29,6 +26,7 @@ export function calcularOpacidadNodo(
   }
 
   const enLabel = nodo.label.toLowerCase().includes(busquedaLimpia);
+  const enAkas = nodo.akas?.some((a) => a.toLowerCase().includes(busquedaLimpia)) ?? false;
   const enResumen = nodo.summary.toLowerCase().includes(busquedaLimpia);
   const enFundamento = nodo.details.theoreticalBasis.toLowerCase().includes(busquedaLimpia);
   const enResponsabilidades =
@@ -38,7 +36,7 @@ export function calcularOpacidadNodo(
   const enEntradas =
     nodo.details.inputs?.some((i) => i.toLowerCase().includes(busquedaLimpia)) ?? false;
 
-  return enLabel || enResumen || enFundamento || enResponsabilidades || enSalidas || enEntradas
+  return enLabel || enAkas || enResumen || enFundamento || enResponsabilidades || enSalidas || enEntradas
     ? 1.0
     : 0.2;
 }

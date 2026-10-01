@@ -15,6 +15,7 @@ export const nodosRoles: NodoScrum[] = [
       label: 'Product Owner',
       category: 'role',
       summary: 'Responsable de maximizar el valor del producto y optimizar la gestión del Product Backlog.',
+      akas: ['PO', 'Dueño del Producto', 'Responsable del Producto'],
       details: {
         responsibilities: [
           'Desarrollar y comunicar explícitamente el Product Goal (Objetivo del Producto).',
@@ -36,6 +37,7 @@ export const nodosRoles: NodoScrum[] = [
       label: 'Developers',
       category: 'role',
       summary: 'Profesionales multidisciplinarios comprometidos con crear cualquier aspecto de un incremento utilizable en cada Sprint.',
+      akas: ['Dev Team', 'Equipo de Desarrollo', 'Desarrolladores'],
       details: {
         responsibilities: [
           'Crear un plan para el Sprint (el Sprint Backlog).',
@@ -57,6 +59,7 @@ export const nodosRoles: NodoScrum[] = [
       label: 'Scrum Master',
       category: 'role',
       summary: 'Líder servicial y facilitador responsable de instaurar Scrum y promover la efectividad del Scrum Team.',
+      akas: ['SM', 'Facilitador Ágil', 'Líder Servidor (Servant Leader)'],
       details: {
         responsibilities: [
           'Guiar a los miembros del equipo en autogestión y multidisciplinariedad.',

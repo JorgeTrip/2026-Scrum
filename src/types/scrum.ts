@@ -31,6 +31,8 @@ export interface EntidadScrum {
   summary: string;
   /** Ficha técnica detallada de la entidad */
   details: DetallesEntidadScrum;
+  /** Denominaciones alternativas o alias populares (Also Known As) */
+  akas?: string[];
 }
 
 export interface DatosNodoScrum extends Record<string, unknown> {
@@ -39,6 +41,8 @@ export interface DatosNodoScrum extends Record<string, unknown> {
   category: CategoriaScrum;
   summary: string;
   details: DetallesEntidadScrum;
+  /** Denominaciones alternativas o alias populares (Also Known As) */
+  akas?: string[];
   /** Nivel de opacidad visual calculado dinámicamente según filtros */
   opacity?: number;
   /** Indica si el nodo se encuentra seleccionado activamente */

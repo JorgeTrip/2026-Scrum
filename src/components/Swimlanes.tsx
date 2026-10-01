@@ -2,9 +2,12 @@ import React from 'react';
 import { useViewport } from '@xyflow/react';
 import { Users, Calendar, Layers } from 'lucide-react';
 
+/** Altura uniforme idéntica para cada una de las tres dimensiones de Scrum */
+const ALTURA_SECCION = 230;
+
 /**
  * Componente que renderiza los tres campos tricolor de Scrum (Swimlanes).
- * Abarcan todo el espacio vertical continuo sin cortes ni espacios vacíos intermedios,
+ * Cada sección de color ocupa exactamente la misma altura (230px) de forma homogénea,
  * sincronizándose con la transformación de paneo y zoom de React Flow.
  */
 export const Swimlanes: React.FC = () => {
@@ -18,41 +21,44 @@ export const Swimlanes: React.FC = () => {
         transformOrigin: '0 0'
       }}
     >
-      {/* 1. Carril Superior: Personas / Roles (Ámbar continuo hacia arriba hasta y=220) */}
+      {/* 1. Carril Superior: Personas / Roles (y: 0px a 230px) */}
       <div
         style={{
-          top: '-4000px',
-          height: '4220px',
+          top: '0px',
+          height: `${ALTURA_SECCION}px`,
           left: '-4000px',
           width: '8000px'
         }}
-        className="absolute border-b border-amber-500/20 bg-amber-950/15 backdrop-blur-[1px]"
+        className="absolute border-b border-amber-500/25 bg-amber-950/15 backdrop-blur-[1px]"
       />
 
-      {/* 2. Carril Medio: Eventos del Ciclo (Índigo continuo de 220px a 450px) */}
+      {/* 2. Carril Medio: Eventos del Ciclo (y: 230px a 460px) */}
       <div
         style={{
-          top: '220px',
-          height: '230px',
+          top: `${ALTURA_SECCION}px`,
+          height: `${ALTURA_SECCION}px`,
           left: '-4000px',
           width: '8000px'
         }}
-        className="absolute border-b border-indigo-500/20 bg-indigo-950/15 backdrop-blur-[1px]"
+        className="absolute border-b border-indigo-500/25 bg-indigo-950/15 backdrop-blur-[1px]"
       />
 
-      {/* 3. Carril Inferior: Documentos (Esmeralda continuo hacia abajo desde 450px) */}
+      {/* 3. Carril Inferior: Documentos (y: 460px a 690px) */}
       <div
         style={{
-          top: '450px',
-          height: '4000px',
+          top: `${ALTURA_SECCION * 2}px`,
+          height: `${ALTURA_SECCION}px`,
           left: '-4000px',
           width: '8000px'
         }}
-        className="absolute bg-emerald-950/15 backdrop-blur-[1px]"
+        className="absolute border-b border-emerald-500/25 bg-emerald-950/15 backdrop-blur-[1px]"
       />
 
       {/* Etiqueta Roles */}
-      <div className="absolute left-[-260px] top-[30px] flex items-center gap-3">
+      <div
+        style={{ top: '25px' }}
+        className="absolute left-[-260px] flex items-center gap-3"
+      >
         <div className="p-2 rounded-xl bg-[#1C1C1E]/90 border border-amber-500/30 shadow-lg">
           <Users className="w-5 h-5 text-amber-400" />
         </div>
@@ -67,7 +73,10 @@ export const Swimlanes: React.FC = () => {
       </div>
 
       {/* Etiqueta Eventos */}
-      <div className="absolute left-[-260px] top-[240px] flex items-center gap-3">
+      <div
+        style={{ top: `${ALTURA_SECCION + 25}px` }}
+        className="absolute left-[-260px] flex items-center gap-3"
+      >
         <div className="p-2 rounded-xl bg-[#1C1C1E]/90 border border-indigo-500/30 shadow-lg">
           <Calendar className="w-5 h-5 text-indigo-400" />
         </div>
@@ -82,7 +91,10 @@ export const Swimlanes: React.FC = () => {
       </div>
 
       {/* Etiqueta Artefactos */}
-      <div className="absolute left-[-260px] top-[470px] flex items-center gap-3">
+      <div
+        style={{ top: `${ALTURA_SECCION * 2 + 25}px` }}
+        className="absolute left-[-260px] flex items-center gap-3"
+      >
         <div className="p-2 rounded-xl bg-[#1C1C1E]/90 border border-emerald-500/30 shadow-lg">
           <Layers className="w-5 h-5 text-emerald-400" />
         </div>

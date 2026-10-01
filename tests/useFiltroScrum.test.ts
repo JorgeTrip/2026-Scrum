@@ -25,4 +25,19 @@ describe('Lógica de Filtrado (aplicarFiltroANodos)', () => {
     expect(nodoIncremento?.data.opacity).toBe(1.0);
     expect(nodoPlanning?.data.opacity).toBe(0.2);
   });
+
+  it('permite buscar y resaltar nodos por sus denominaciones alternativas (AKA)', () => {
+    // Búsqueda por alias "Daily Standup" para encontrar Daily Scrum
+    const nodosStandup = aplicarFiltroANodos(nodosScrum, 'all', 'Daily Standup');
+    const nodoDaily = nodosStandup.find((n) => n.id === 'event-daily-scrum');
+    const nodoReview = nodosStandup.find((n) => n.id === 'event-sprint-review');
+
+    expect(nodoDaily?.data.opacity).toBe(1.0);
+    expect(nodoReview?.data.opacity).toBe(0.2);
+
+    // Búsqueda por acrónimo "PO" para encontrar Product Owner
+    const nodosPO = aplicarFiltroANodos(nodosScrum, 'all', 'PO');
+    const nodoPO = nodosPO.find((n) => n.id === 'role-product-owner');
+    expect(nodoPO?.data.opacity).toBe(1.0);
+  });
 });

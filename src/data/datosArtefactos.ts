@@ -15,6 +15,7 @@ export const nodosArtefactos: NodoScrum[] = [
       label: 'Product Vision Board',
       category: 'artifact',
       summary: 'Marco visual estratégico que define el grupo objetivo, necesidades del usuario, propuesta de valor y metas del negocio.',
+      akas: ['Tablero de Visión', 'Product Vision Canvas', 'Visión del Producto'],
       details: {
         inputs: ['Investigación de mercado', 'Entrevistas con clientes', 'Visión corporativa'],
         outputs: [
@@ -35,6 +36,7 @@ export const nodosArtefactos: NodoScrum[] = [
       label: 'Product Backlog',
       category: 'artifact',
       summary: 'Lista emergente y ordenada de todo lo que se sabe necesario para mejorar el producto.',
+      akas: ['PBL', 'Pila del Producto', 'Backlog del Producto', 'PBI List'],
       details: {
         inputs: ['Product Vision Board', 'Visión estratégica', 'Feedback continuo del mercado'],
         outputs: [
@@ -55,6 +57,7 @@ export const nodosArtefactos: NodoScrum[] = [
       label: 'Sprint Backlog',
       category: 'artifact',
       summary: 'Plan detallado por y para los Developers compuesto por el Sprint Goal, los PBI seleccionados y un plan accionable.',
+      akas: ['SBL', 'Pila del Sprint', 'Backlog del Sprint', 'Plan del Sprint'],
       details: {
         inputs: ['Product Backlog priorizado', 'Capacidad del equipo', 'Definition of Done'],
         outputs: [
@@ -75,6 +78,7 @@ export const nodosArtefactos: NodoScrum[] = [
       label: 'Increment',
       category: 'artifact',
       summary: 'Un peldaño concreto hacia el Product Goal; utilizable de inmediato y validado con la Definition of Done.',
+      akas: ['Incremento de Producto', 'Entregable Terminado', 'PSPI (Potentially Shippable)'],
       details: {
         inputs: ['Tareas técnicas completadas', 'Criterios de aceptación satisfechos'],
         outputs: [

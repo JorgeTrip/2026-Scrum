@@ -61,9 +61,15 @@ export const RoleNode: React.FC<NodeProps<NodoScrum>> = memo(({ data, selected }
         </span>
       </div>
 
-      <h3 className="text-sm font-bold text-white tracking-wide mb-1 group-hover:text-amber-300 transition-colors">
+      <h3 className="text-sm font-bold text-white tracking-wide group-hover:text-amber-300 transition-colors">
         {data.label}
       </h3>
+      {data.akas && data.akas.length > 0 && (
+        <p className="text-[10px] text-zinc-400 font-medium mb-1.5 truncate">
+          <span className="text-zinc-500 font-normal">AKA: </span>
+          {data.akas.slice(0, 2).join(' · ')}
+        </p>
+      )}
       <p className="text-xs text-zinc-400 line-clamp-2 leading-relaxed">
         {data.summary}
       </p>

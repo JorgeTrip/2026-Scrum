@@ -64,6 +64,25 @@ export const TooltipFichaTecnica: React.FC<TooltipFichaTecnicaProps> = ({ datos,
           </p>
         </div>
 
+        {/* Denominaciones alternativas (AKAs) */}
+        {datos.akas && datos.akas.length > 0 && (
+          <div className="p-2.5 rounded-xl bg-zinc-900/60 border border-zinc-800/80">
+            <span className="font-extrabold text-[11px] uppercase text-zinc-400 tracking-wider block mb-1.5">
+              También conocido como (AKA)
+            </span>
+            <div className="flex flex-wrap gap-1.5">
+              {datos.akas.map((aka, i) => (
+                <span
+                  key={i}
+                  className="px-2 py-0.5 rounded-md bg-zinc-800 border border-zinc-700 text-xs text-zinc-200 font-medium"
+                >
+                  {aka}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Timebox si aplica */}
         {details.timebox && (
           <div className="flex items-center gap-2 p-2.5 rounded-xl bg-indigo-950/30 border border-indigo-500/30 text-indigo-300 font-mono text-xs font-semibold">

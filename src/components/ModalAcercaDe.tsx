@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X, BookOpen, CheckCircle2, GraduationCap, ShieldCheck, History } from 'lucide-react';
 import { ModalHistorialCambios } from './ModalHistorialCambios';
+import { VERSION_APP } from '../version';
 
 interface PropsModalAcercaDe {
   abierto: boolean;
@@ -131,8 +132,8 @@ export const ModalAcercaDe: React.FC<PropsModalAcercaDe> = ({ abierto, alCerrar 
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
               <span>© 2026 Jorge O. Tripodi. Todos los derechos reservados.</span>
             </div>
-            <span className="text-[10px] px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-300 border border-zinc-700/60">
-              Versión 0.1.0
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-300 border border-zinc-700/60 font-mono">
+              Versión {VERSION_APP}
             </span>
           </div>
         </div>

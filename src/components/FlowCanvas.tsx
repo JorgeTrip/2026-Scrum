@@ -21,6 +21,7 @@ import { ArtifactNode } from './nodes/ArtifactNode';
 import { AristaDespejada } from './edges/AristaDespejada';
 import { Swimlanes } from './Swimlanes';
 import { ControlZoomPreciso } from './ControlZoomPreciso';
+import { calcularSnapVertical } from '../utils/alineacionSnap';
 import type { NodoScrum, AristaScrum, DatosNodoScrum } from '../types/scrum';
 import {
   guardarPosicionNodo,
@@ -63,17 +64,34 @@ const FlowCanvasInterno: React.FC<FlowCanvasProps> = ({
     });
   }, [nodos]);
 
+  const [guiaSnapY, setGuiaSnapY] = useState<number | null>(null);
+
   const onNodesChange: OnNodesChange<NodoScrum> = useCallback((cambios) => {
+    let snapY: number | null = null;
+    let arrastrando = false;
+
+    const cambiosConSnap = cambios.map((c) => {
+      if (c.type === 'position' && c.position && c.dragging) {
+        arrastrando = true;
+        const res = calcularSnapVertical(c.id, c.position, nodosInternos);
+        if (res.snapY !== null) snapY = res.snapY;
+        return { ...c, position: res.posicion };
+      }
+      return c;
+    });
+
+    setGuiaSnapY(arrastrando ? snapY : null);
+
     setNodosInternos((prev) => {
-      const actualizados = applyNodeChanges(cambios, prev);
-      cambios.forEach((c) => {
+      const actualizados = applyNodeChanges(cambiosConSnap, prev);
+      cambiosConSnap.forEach((c) => {
         if (c.type === 'position' && c.position) {
           guardarPosicionNodo(c.id, c.position);
         }
       });
       return actualizados;
     });
-  }, []);
+  }, [nodosInternos]);
 
   const { fitView } = useReactFlow();
 
@@ -106,11 +124,8 @@ const FlowCanvasInterno: React.FC<FlowCanvasProps> = ({
   }), []);
 
   const edgeTypes = useMemo<EdgeTypes>(() => ({ despejada: AristaDespejada }), []);
-
   const manejarClickEnNodo: NodeMouseHandler<NodoScrum> = useCallback(
-    (_evento, nodo) => {
-      onSeleccionarNodo(nodo.data);
-    },
+    (_, nodo) => onSeleccionarNodo(nodo.data),
     [onSeleccionarNodo]
   );
 
@@ -144,20 +159,19 @@ const FlowCanvasInterno: React.FC<FlowCanvasProps> = ({
         maxZoom={2.2}
         proOptions={{ hideAttribution: true }}
       >
-        <Background
-          variant={BackgroundVariant.Dots}
-          gap={24}
-          size={1.5}
-          color="#27272a"
-        />
-
-        {/* 3 Swimlanes que abarcan el 100% del viewport vertical reactivos al zoom */}
+        <Background variant={BackgroundVariant.Dots} gap={24} size={1.5} color="#27272a" />
         <Swimlanes />
 
-        {/* Control de zoom de alta precisión y micro-pasos junto al mini-mapa */}
+        {/* Línea guía magnética visual de encaje vertical ("Snap") */}
+        {guiaSnapY !== null && (
+          <div
+            style={{ top: `${guiaSnapY}px`, left: '-4000px', width: '8000px' }}
+            className="absolute border-t-2 border-dashed border-indigo-400 pointer-events-none z-30 shadow-[0_0_12px_rgba(99,102,241,0.9)]"
+          />
+        )}
+
         <ControlZoomPreciso />
 
-        {/* Mini-mapa en la esquina inferior derecha */}
         <MiniMap<NodoScrum>
           nodeStrokeWidth={3}
           zoomable
@@ -175,13 +189,8 @@ const FlowCanvasInterno: React.FC<FlowCanvasProps> = ({
   );
 };
 
-/**
- * Componente exportado con proveedor de contexto ReactFlowProvider garantizado.
- */
-export const FlowCanvas: React.FC<FlowCanvasProps> = (props) => {
-  return (
-    <ReactFlowProvider>
-      <FlowCanvasInterno {...props} />
-    </ReactFlowProvider>
-  );
-};
+export const FlowCanvas: React.FC<FlowCanvasProps> = (props) => (
+  <ReactFlowProvider>
+    <FlowCanvasInterno {...props} />
+  </ReactFlowProvider>
+);

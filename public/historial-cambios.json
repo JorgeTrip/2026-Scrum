@@ -1,5 +1,12 @@
 [
   {
+    "hash": "6eccbe7",
+    "mensaje": "feat: Se implementa control de zoom preciso con micropasos del 5% e indicador interactivo",
+    "autor": "Jorge O. Tripodi",
+    "fecha": "2026-10-01",
+    "tipo": "feat"
+  },
+  {
     "hash": "77f0ecb",
     "mensaje": "feat: Se hardcodean coordenadas predeterminadas y se agrega autoencuadre responsive",
     "autor": "Jorge O. Tripodi",

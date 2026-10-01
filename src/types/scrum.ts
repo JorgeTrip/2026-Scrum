@@ -43,6 +43,8 @@ export interface DatosNodoScrum extends Record<string, unknown> {
   opacity?: number;
   /** Indica si el nodo se encuentra seleccionado activamente */
   isSelected?: boolean;
+  /** Indica si el tooltip con la ficha técnica está visible emergiendo del nodo */
+  estaAbiertoTooltip?: boolean;
 }
 
 export type NodoScrum = Node<DatosNodoScrum>;

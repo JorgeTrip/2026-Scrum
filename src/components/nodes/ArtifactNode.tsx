@@ -1,15 +1,18 @@
 import React, { memo } from 'react';
-import type { NodeProps } from '@xyflow/react';
+import { NodeToolbar, Position, type NodeProps } from '@xyflow/react';
 import { Layers, ListOrdered, CheckCircle2, BookmarkCheck, Compass } from 'lucide-react';
 import type { NodoScrum } from '../../types/scrum';
 import { HandlesConSeparacion } from './HandlesConSeparacion';
+import { TooltipFichaTecnica } from './TooltipFichaTecnica';
 
 /**
  * Componente visual para nodos de la dimensión Documentos (Artefactos y Compromisos).
+ * Incluye tooltip emergente anclado al nodo.
  */
 export const ArtifactNode: React.FC<NodeProps<NodoScrum>> = memo(({ data, selected }) => {
   const opacidad = data.opacity ?? 1.0;
   const esFoco = selected || Boolean(data.isSelected);
+  const estaAbierto = Boolean(data.estaAbiertoTooltip);
 
   const obtenerIcono = () => {
     switch (data.id) {
@@ -28,14 +31,29 @@ export const ArtifactNode: React.FC<NodeProps<NodoScrum>> = memo(({ data, select
 
   const compromiso = data.details.outputs?.find((o) => o.startsWith('Compromiso:')) ?? null;
 
+  const cerrarTooltip = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    window.dispatchEvent(new CustomEvent('cerrar-tooltip-scrum'));
+  };
+
   return (
     <div
       style={{ opacity: opacidad }}
       className={`group relative w-64 rounded-2xl p-4 transition-all duration-300 backdrop-blur-md cursor-grab active:cursor-grabbing
         bg-[#1C1C1E]/95 hover:bg-[#252528] border-2 shadow-xl shadow-black/30
-        ${esFoco ? 'border-emerald-400 ring-4 ring-emerald-400/20 scale-[1.03] shadow-emerald-500/10' : 'border-emerald-500/30 hover:border-emerald-500/60'}
+        ${esFoco || estaAbierto ? 'border-emerald-400 ring-4 ring-emerald-400/20 scale-[1.03] shadow-emerald-500/10' : 'border-emerald-500/30 hover:border-emerald-500/60'}
       `}
     >
+      {/* Tooltip emergente que brota hacia arriba para no tapar los bordes de pantalla */}
+      <NodeToolbar
+        isVisible={estaAbierto}
+        position={Position.Top}
+        offset={12}
+        className="z-50"
+      >
+        <TooltipFichaTecnica datos={data} onCerrar={cerrarTooltip} />
+      </NodeToolbar>
+
       <HandlesConSeparacion />
 
       <div className="flex items-center justify-between mb-2">
@@ -64,7 +82,7 @@ export const ArtifactNode: React.FC<NodeProps<NodoScrum>> = memo(({ data, select
       <div className="mt-3 pt-2.5 border-t border-zinc-800/80 flex items-center justify-between text-[11px] text-zinc-500">
         <span>{data.details.inputs?.length ?? 0} insumos</span>
         <span className="text-emerald-400 font-medium group-hover:translate-x-0.5 transition-transform">
-          Ver ficha &rarr;
+          {estaAbierto ? 'Ocultar ficha' : 'Ver ficha'} &rarr;
         </span>
       </div>
     </div>

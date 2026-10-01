@@ -1,15 +1,18 @@
 import React, { memo } from 'react';
-import type { NodeProps } from '@xyflow/react';
+import { NodeToolbar, Position, type NodeProps } from '@xyflow/react';
 import { Users, ShieldCheck, Code2 } from 'lucide-react';
 import type { NodoScrum } from '../../types/scrum';
 import { HandlesConSeparacion } from './HandlesConSeparacion';
+import { TooltipFichaTecnica } from './TooltipFichaTecnica';
 
 /**
  * Componente visual para nodos de la dimensión Personas (Roles).
+ * Incluye tooltip emergente anclado al nodo.
  */
 export const RoleNode: React.FC<NodeProps<NodoScrum>> = memo(({ data, selected }) => {
   const opacidad = data.opacity ?? 1.0;
   const esFoco = selected || Boolean(data.isSelected);
+  const estaAbierto = Boolean(data.estaAbiertoTooltip);
 
   const obtenerIcono = () => {
     switch (data.id) {
@@ -24,14 +27,29 @@ export const RoleNode: React.FC<NodeProps<NodoScrum>> = memo(({ data, selected }
     }
   };
 
+  const cerrarTooltip = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    window.dispatchEvent(new CustomEvent('cerrar-tooltip-scrum'));
+  };
+
   return (
     <div
       style={{ opacity: opacidad }}
       className={`group relative w-64 rounded-2xl p-4 transition-all duration-300 backdrop-blur-md cursor-grab active:cursor-grabbing
         bg-[#1C1C1E]/95 hover:bg-[#252528] border-2 shadow-xl shadow-black/30
-        ${esFoco ? 'border-amber-400 ring-4 ring-amber-400/20 scale-[1.03] shadow-amber-500/10' : 'border-amber-500/30 hover:border-amber-500/60'}
+        ${esFoco || estaAbierto ? 'border-amber-400 ring-4 ring-amber-400/20 scale-[1.03] shadow-amber-500/10' : 'border-amber-500/30 hover:border-amber-500/60'}
       `}
     >
+      {/* Tooltip emergente que brota directamente debajo del nodo */}
+      <NodeToolbar
+        isVisible={estaAbierto}
+        position={Position.Bottom}
+        offset={12}
+        className="z-50"
+      >
+        <TooltipFichaTecnica datos={data} onCerrar={cerrarTooltip} />
+      </NodeToolbar>
+
       <HandlesConSeparacion />
 
       <div className="flex items-center justify-between mb-2">
@@ -53,7 +71,7 @@ export const RoleNode: React.FC<NodeProps<NodoScrum>> = memo(({ data, selected }
       <div className="mt-3 pt-2.5 border-t border-zinc-800/80 flex items-center justify-between text-[11px] text-zinc-500">
         <span>{data.details.responsibilities?.length ?? 0} responsabilidades</span>
         <span className="text-amber-400 font-medium group-hover:translate-x-0.5 transition-transform">
-          Ver ficha &rarr;
+          {estaAbierto ? 'Ocultar ficha' : 'Ver ficha'} &rarr;
         </span>
       </div>
     </div>

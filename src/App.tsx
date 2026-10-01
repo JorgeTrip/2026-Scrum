@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { TopBar } from './components/TopBar';
 import { FlowCanvas } from './components/FlowCanvas';
-import { DetailDrawer } from './components/DetailDrawer';
 import { PanelHistoria } from './components/PanelHistoria';
 import { useFiltroScrum, aplicarFiltroANodos } from './hooks/useFiltroScrum';
 import { useFlujoScrum } from './hooks/useFlujoScrum';
@@ -10,7 +9,7 @@ import { nodosScrum, aristasScrum } from './data/scrumData';
 
 /**
  * Componente raíz de la aplicación Scrum Interactivo.
- * Coordina el modo Historia guiada (Storytelling) y el modo Mapa Libre.
+ * Orquesta la barra superior, el lienzo con tooltips emergentes de nodos y el panel de historia.
  */
 export const App: React.FC = () => {
   const {
@@ -35,23 +34,29 @@ export const App: React.FC = () => {
   } = useHistoriaScrum(nodosScrum, aristasScrum);
 
   const {
-    entidadSeleccionada,
-    drawerAbierto,
-    seleccionarNodo,
-    cerrarDrawer
+    idNodoConTooltip,
+    alternarTooltipNodo,
+    cerrarTooltip
   } = useFlujoScrum();
 
-  // En modo mapa libre se aplican los filtros de búsqueda y categoría
+  // Calcula los nodos a renderizar inyectando el estado del tooltip emergente
   const nodosFinales = useMemo(() => {
-    if (modoActivo === 'mapa') {
-      return aplicarFiltroANodos(nodosScrum, categoriaSeleccionada, busqueda);
+    let nodosBase = modoActivo === 'mapa'
+      ? aplicarFiltroANodos(nodosScrum, categoriaSeleccionada, busqueda)
+      : nodosVisibles;
+
+    if (modoActivo === 'historia' && busqueda.trim()) {
+      nodosBase = aplicarFiltroANodos(nodosBase, 'all', busqueda);
     }
-    // En modo historia, si el usuario busca algo específico, también se atenúa
-    if (busqueda.trim()) {
-      return aplicarFiltroANodos(nodosVisibles, 'all', busqueda);
-    }
-    return nodosVisibles;
-  }, [modoActivo, categoriaSeleccionada, busqueda, nodosVisibles]);
+
+    return nodosBase.map((nodo) => ({
+      ...nodo,
+      data: {
+        ...nodo.data,
+        estaAbiertoTooltip: nodo.id === idNodoConTooltip
+      }
+    }));
+  }, [modoActivo, categoriaSeleccionada, busqueda, nodosVisibles, idNodoConTooltip]);
 
   return (
     <div className="w-screen h-screen flex flex-col bg-[#121214] text-[#F5F5F7] overflow-hidden select-none font-sans">
@@ -69,10 +74,11 @@ export const App: React.FC = () => {
         <FlowCanvas
           nodos={nodosFinales}
           aristas={aristasVisibles}
-          onSeleccionarNodo={seleccionarNodo}
+          onSeleccionarNodo={alternarTooltipNodo}
+          onCerrarTooltip={cerrarTooltip}
         />
 
-        {/* Panel inferior interactivo para el modo Historia */}
+        {/* Panel interactivo arrastrable para el modo Historia */}
         {modoActivo === 'historia' && (
           <PanelHistoria
             capitulo={capituloActual}
@@ -85,12 +91,6 @@ export const App: React.FC = () => {
           />
         )}
       </main>
-
-      <DetailDrawer
-        entidad={entidadSeleccionada}
-        abierto={drawerAbierto}
-        onCerrar={cerrarDrawer}
-      />
     </div>
   );
 };

@@ -24,12 +24,18 @@ interface FlowCanvasProps {
   nodos: NodoScrum[];
   aristas: AristaScrum[];
   onSeleccionarNodo: (datos: DatosNodoScrum) => void;
+  onCerrarTooltip?: () => void;
 }
 
 /**
  * Contenedor principal de React Flow con nodos interactivos, arrastrables y aristas despejadas.
  */
-export const FlowCanvas: React.FC<FlowCanvasProps> = ({ nodos, aristas, onSeleccionarNodo }) => {
+export const FlowCanvas: React.FC<FlowCanvasProps> = ({
+  nodos,
+  aristas,
+  onSeleccionarNodo,
+  onCerrarTooltip
+}) => {
   const [nodosInternos, setNodosInternos] = useState<NodoScrum[]>(nodos);
 
   // Sincroniza nodos visibles preservando las posiciones reubicadas por el usuario
@@ -79,6 +85,7 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({ nodos, aristas, onSelecc
         edgeTypes={edgeTypes}
         onNodesChange={onNodesChange}
         onNodeClick={manejarClickEnNodo}
+        onPaneClick={onCerrarTooltip}
         nodesDraggable={true}
         elementsSelectable={true}
         fitView

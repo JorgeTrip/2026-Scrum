@@ -1,41 +1,45 @@
 /**
- * Custom Hook para gestionar la selección de nodos y el estado del Drawer lateral.
+ * Custom Hook para gestionar el tooltip interactivo emergente de los nodos de Scrum.
  */
 
 import { useState, useCallback, useEffect } from 'react';
 import type { DatosNodoScrum } from '../types/scrum';
 
 export function useFlujoScrum() {
-  const [entidadSeleccionada, setEntidadSeleccionada] = useState<DatosNodoScrum | null>(null);
-  const [drawerAbierto, setDrawerAbierto] = useState(false);
+  const [idNodoConTooltip, setIdNodoConTooltip] = useState<string | null>(null);
 
-  const seleccionarNodo = useCallback((datosNodo: DatosNodoScrum) => {
-    setEntidadSeleccionada(datosNodo);
-    setDrawerAbierto(true);
+  const alternarTooltipNodo = useCallback((datosNodo: DatosNodoScrum) => {
+    setIdNodoConTooltip((prev) => (prev === datosNodo.id ? null : datosNodo.id));
   }, []);
 
-  const cerrarDrawer = useCallback(() => {
-    setDrawerAbierto(false);
+  const cerrarTooltip = useCallback(() => {
+    setIdNodoConTooltip(null);
   }, []);
 
-  // Cierre accesible mediante la tecla Escape
+  // Cierre accesible mediante la tecla Escape y eventos personalizados
   useEffect(() => {
     const manejarTeclaEscape = (evento: KeyboardEvent) => {
-      if (evento.key === 'Escape' && drawerAbierto) {
-        cerrarDrawer();
+      if (evento.key === 'Escape' && idNodoConTooltip !== null) {
+        cerrarTooltip();
       }
     };
 
+    const manejarEventoCierre = () => {
+      cerrarTooltip();
+    };
+
     window.addEventListener('keydown', manejarTeclaEscape);
+    window.addEventListener('cerrar-tooltip-scrum', manejarEventoCierre);
+
     return () => {
       window.removeEventListener('keydown', manejarTeclaEscape);
+      window.removeEventListener('cerrar-tooltip-scrum', manejarEventoCierre);
     };
-  }, [drawerAbierto, cerrarDrawer]);
+  }, [idNodoConTooltip, cerrarTooltip]);
 
   return {
-    entidadSeleccionada,
-    drawerAbierto,
-    seleccionarNodo,
-    cerrarDrawer
+    idNodoConTooltip,
+    alternarTooltipNodo,
+    cerrarTooltip
   };
 }

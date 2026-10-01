@@ -44,10 +44,10 @@ export const EventNode: React.FC<NodeProps<NodoScrum>> = memo(({ data, selected 
         ${esFoco || estaAbierto ? 'border-indigo-400 ring-4 ring-indigo-400/20 scale-[1.03] shadow-indigo-500/10' : 'border-indigo-500/30 hover:border-indigo-500/60'}
       `}
     >
-      {/* Tooltip emergente que brota directamente debajo del evento */}
+      {/* Tooltip emergente que brota hacia arriba para no invadir el footer */}
       <NodeToolbar
         isVisible={estaAbierto}
-        position={Position.Bottom}
+        position={Position.Top}
         offset={12}
         className="z-50"
       >

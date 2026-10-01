@@ -39,7 +39,7 @@ try {
     });
 
   mkdirSync(dirname(rutaDestino), { recursive: true });
-  writeFileSync(rutaDestino, JSON.stringify(entradas, null, 2), 'utf-8');
+  writeFileSync(rutaDestino, JSON.stringify(entradas), 'utf-8');
   console.log(`✅ [Historial] Se generó public/historial-cambios.json con ${entradas.length} commits.`);
 } catch (error) {
   console.warn(`⚠️ [Historial] No se pudo leer git log (${error.message}). Se conserva archivo existente.`);

@@ -55,7 +55,7 @@ export const TooltipFichaTecnica: React.FC<TooltipFichaTecnicaProps> = ({ datos,
       {/* Contenido desplazable con tipografía ampliada */}
       <div
         onWheel={(e) => e.stopPropagation()}
-        className="nowheel space-y-4 max-h-72 overflow-y-auto pr-1.5 text-xs md:text-sm"
+        className="nowheel space-y-4 max-h-[min(260px,36vh)] overflow-y-auto pr-1.5 text-xs md:text-sm"
       >
         {/* Resumen Ejecutivo */}
         <div>

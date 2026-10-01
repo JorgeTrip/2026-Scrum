@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Search, X, Users, Calendar, Layers, Sparkles, BookOpen, Compass } from 'lucide-react';
 import type { CategoriaScrum } from '../types/scrum';
+import { ModalAcercaDe } from './ModalAcercaDe';
 
 interface TopBarProps {
   busqueda: string;
@@ -24,6 +25,8 @@ export const TopBar: React.FC<TopBarProps> = ({
   modoActivo,
   onCambiarModo
 }) => {
+  const [modalAbierto, setModalAbierto] = useState(false);
+
   const filtros: { id: CategoriaScrum | 'all'; label: string; icono: React.ReactNode }[] = [
     { id: 'all', label: 'Todos', icono: <Sparkles className="w-3.5 h-3.5" /> },
     { id: 'role', label: 'Roles', icono: <Users className="w-3.5 h-3.5" /> },
@@ -33,17 +36,28 @@ export const TopBar: React.FC<TopBarProps> = ({
 
   return (
     <header className="h-16 px-6 bg-[#1C1C1E]/95 backdrop-blur-xl border-b border-zinc-800/80 flex items-center justify-between z-20 shadow-md">
-      {/* Logotipo y Título */}
+      {/* Logotipo y Título interactivo */}
       <div className="flex items-center gap-3">
-        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-amber-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-          <span className="font-black text-white text-base">S</span>
-        </div>
+        <button
+          type="button"
+          onClick={() => setModalAbierto(true)}
+          title="Acerca del proyecto y la Guía Oficial 2020 (clic para ver detalles)"
+          aria-label="Abrir información del proyecto y Guía Oficial de Scrum 2020"
+          className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-amber-500 flex items-center justify-center shadow-lg shadow-indigo-500/20 hover:scale-105 active:scale-95 transition-all cursor-pointer group"
+        >
+          <span className="font-black text-white text-base group-hover:rotate-6 transition-transform">S</span>
+        </button>
         <div>
           <h1 className="text-sm font-bold text-white tracking-tight flex items-center gap-2">
             Flujo Metodológico Scrum
-            <span className="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-300 border border-zinc-700/60">
+            <button
+              type="button"
+              onClick={() => setModalAbierto(true)}
+              title="¿Por qué Guía 2020? Clic para ver fundamentos"
+              className="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white border border-zinc-700/60 transition-colors cursor-pointer"
+            >
               Guía 2020
-            </span>
+            </button>
           </h1>
           <p className="text-[11px] text-zinc-400">
             Estructura tridimensional: Personas, Eventos y Documentos
@@ -131,6 +145,12 @@ export const TopBar: React.FC<TopBarProps> = ({
           </button>
         )}
       </div>
+
+      {/* Modal explicativo del marco metodológico y autoría */}
+      <ModalAcercaDe
+        abierto={modalAbierto}
+        alCerrar={() => setModalAbierto(false)}
+      />
     </header>
   );
 };

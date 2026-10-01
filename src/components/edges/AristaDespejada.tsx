@@ -1,20 +1,17 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useRef, useMemo } from 'react';
 import {
   BaseEdge,
   EdgeLabelRenderer,
-  getSmoothStepPath,
   useReactFlow,
   type EdgeProps
 } from '@xyflow/react';
-import { proyectarPuntoEnTrayectoria, type Punto2D } from '../../utils/trayectoriaUtilidades';
 import {
-  guardarPosicionEtiqueta,
-  obtenerPosicionEtiqueta
-} from '../../utils/persistenciaPosiciones';
+  construirRutaSmoothStepConDesvio,
+  obtenerPuntoEnTrayectoriaPorT,
+  type Punto2D
+} from '../../utils/trayectoriaUtilidades';
+import { useArrastreArista } from '../../hooks/useArrastreArista';
 import { GuiaDestinoArista } from './GuiaDestinoArista';
-
-/** Distancia mínima en píxeles antes de activar el arrastre, evitando movimientos no deseados */
-const UMBRAL_ARRASTRE_PX = 6;
 
 interface DatosAristaPersonalizada {
   offset?: number;
@@ -22,7 +19,8 @@ interface DatosAristaPersonalizada {
 }
 
 /**
- * Componente de arista con halo de despeje, arrastre amortiguado y previsualización de destino.
+ * Componente de arista con halo de despeje, arrastre magnético a lo largo de la trayectoria
+ * y capacidad elástica de empujar la línea de relación hacia los lados o arriba/abajo.
  */
 export const AristaDespejada: React.FC<EdgeProps> = ({
   id,
@@ -30,8 +28,6 @@ export const AristaDespejada: React.FC<EdgeProps> = ({
   sourceY,
   targetX,
   targetY,
-  sourcePosition,
-  targetPosition,
   style = {},
   markerEnd,
   label,
@@ -42,101 +38,61 @@ export const AristaDespejada: React.FC<EdgeProps> = ({
   const radioBorde = datos.borderRadius ?? 16;
 
   const refRuta = useRef<SVGPathElement>(null);
-  const [posicionDesplazada, setPosicionDesplazada] = useState<Punto2D | null>(() => {
-    return obtenerPosicionEtiqueta(id);
-  });
-
-  const [estaArrastrando, setEstaArrastrando] = useState(false);
-  const [destinoProyectado, setDestinoProyectado] = useState<Punto2D | null>(null);
-  const [cursorFlotante, setCursorFlotante] = useState<Punto2D | null>(null);
-
-  const inicioPointerRef = useRef<Punto2D | null>(null);
-  const superoUmbralRef = useRef(false);
-
   const { screenToFlowPosition } = useReactFlow();
 
-  // Escucha restablecimiento global de posiciones para reiniciar la etiqueta
-  useEffect(() => {
-    const alRestablecer = () => {
-      setPosicionDesplazada(null);
-      setDestinoProyectado(null);
-      setCursorFlotante(null);
-    };
-    window.addEventListener('restablecer-posiciones-scrum', alRestablecer);
-    return () => window.removeEventListener('restablecer-posiciones-scrum', alRestablecer);
-  }, []);
-
-  const [edgePath, labelX, labelY] = getSmoothStepPath({
+  const {
+    estadoArista,
+    desvioEfectivo,
+    estaArrastrando,
+    destinoProyectado,
+    cursorFlotante,
+    iniciarArrastreEtiqueta,
+    moverEtiqueta,
+    finalizarArrastreEtiqueta
+  } = useArrastreArista({
+    id,
     sourceX,
     sourceY,
-    sourcePosition,
     targetX,
     targetY,
-    targetPosition,
-    borderRadius: radioBorde,
-    offset: offsetPersonalizado
+    refRuta,
+    screenToFlowPosition
   });
 
-  // Coordenada actual de la etiqueta en reposo
-  const coordX = posicionDesplazada?.x ?? labelX;
-  const coordY = posicionDesplazada?.y ?? labelY;
+  // Genera la trayectoria de la relación incorporando el desvío elástico perpendicular
+  const edgePath = useMemo(() => {
+    return construirRutaSmoothStepConDesvio({
+      sourceX,
+      sourceY,
+      targetX,
+      targetY,
+      desvio: desvioEfectivo,
+      borderRadius: radioBorde,
+      offset: offsetPersonalizado
+    });
+  }, [sourceX, sourceY, targetX, targetY, desvioEfectivo, radioBorde, offsetPersonalizado]);
 
-  const iniciarArrastreEtiqueta = useCallback((e: React.PointerEvent) => {
-    if (e.button !== 0) return;
-    e.stopPropagation();
-    inicioPointerRef.current = { x: e.clientX, y: e.clientY };
-    superoUmbralRef.current = false;
-    (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
-  }, []);
+  // Calcula la posición exacta de la etiqueta sobre la curva según su parámetro relativo t
+  const puntoSobreCurva: Punto2D = useMemo(() => {
+    if (refRuta.current) {
+      return obtenerPuntoEnTrayectoriaPorT(refRuta.current, estadoArista.t);
+    }
+    // Fallback matemático antes del primer tick de medición del DOM
+    const t = estadoArista.t;
+    const dx = targetX - sourceX;
+    const dy = targetY - sourceY;
+    const esH = Math.abs(dx) >= Math.abs(dy);
+    const mx = sourceX + dx * t;
+    const my = sourceY + dy * t + (esH ? desvioEfectivo : 0);
+    return { x: Math.round(mx), y: Math.round(my) };
+  }, [estadoArista.t, sourceX, sourceY, targetX, targetY, desvioEfectivo]);
 
-  const moverEtiqueta = useCallback(
-    (e: React.PointerEvent) => {
-      if (!inicioPointerRef.current || !refRuta.current) return;
-      e.stopPropagation();
-
-      const dx = e.clientX - inicioPointerRef.current.x;
-      const dy = e.clientY - inicioPointerRef.current.y;
-      const dist = Math.hypot(dx, dy);
-
-      // Bloquea movimientos bruscos mientras se mantiene presionada la etiqueta
-      if (!superoUmbralRef.current) {
-        if (dist < UMBRAL_ARRASTRE_PX) return;
-        superoUmbralRef.current = true;
-        setEstaArrastrando(true);
-      }
-
-      const puntoFlujo = screenToFlowPosition({ x: e.clientX, y: e.clientY });
-      const proyectado = proyectarPuntoEnTrayectoria(refRuta.current, puntoFlujo);
-
-      setCursorFlotante(puntoFlujo);
-      setDestinoProyectado(proyectado);
-    },
-    [screenToFlowPosition]
-  );
-
-  const finalizarArrastreEtiqueta = useCallback(
-    (e: React.PointerEvent) => {
-      e.stopPropagation();
-      if (superoUmbralRef.current && destinoProyectado) {
-        setPosicionDesplazada(destinoProyectado);
-        guardarPosicionEtiqueta(id, destinoProyectado);
-      }
-      setEstaArrastrando(false);
-      setDestinoProyectado(null);
-      setCursorFlotante(null);
-      inicioPointerRef.current = null;
-      superoUmbralRef.current = false;
-    },
-    [destinoProyectado, id]
-  );
-
-  // Posición renderizada de la etiqueta activa durante el arrastre o en reposo
-  const renderX = estaArrastrando && cursorFlotante ? cursorFlotante.x : coordX;
-  const renderY = estaArrastrando && cursorFlotante ? cursorFlotante.y : coordY;
+  const renderX = estaArrastrando && cursorFlotante ? cursorFlotante.x : puntoSobreCurva.x;
+  const renderY = estaArrastrando && cursorFlotante ? cursorFlotante.y : puntoSobreCurva.y;
 
   return (
     <>
-      {/* Halo de corte de fondo */}
+      {/* Halo de corte de fondo para despegue visual */}
       <path
         ref={refRuta}
         d={edgePath}
@@ -145,13 +101,13 @@ export const AristaDespejada: React.FC<EdgeProps> = ({
         strokeWidth={8}
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="pointer-events-none transition-all duration-300"
+        className="pointer-events-none transition-all duration-75"
       />
 
-      {/* Línea principal coloreada y orientada */}
+      {/* Línea principal coloreada */}
       <BaseEdge id={id} path={edgePath} style={style} markerEnd={markerEnd} />
 
-      {/* Previsualización predictiva de destino y anclaje magnético sobre la trayectoria */}
+      {/* Previsualización predictiva: Anclaje y silueta fantasma en el destino proyectado */}
       {estaArrastrando && destinoProyectado && cursorFlotante && label && (
         <GuiaDestinoArista
           label={String(label)}
@@ -160,7 +116,7 @@ export const AristaDespejada: React.FC<EdgeProps> = ({
         />
       )}
 
-      {/* Etiqueta deslizable con umbral amortiguado de arrastre */}
+      {/* Etiqueta interactiva: Se desliza longitudinalmente o empuja la relación perpendicularmente */}
       {label && (
         <EdgeLabelRenderer>
           <div
@@ -173,8 +129,8 @@ export const AristaDespejada: React.FC<EdgeProps> = ({
               transform: `translate(-50%, -50%) translate(${renderX}px,${renderY}px)`,
               pointerEvents: 'all'
             }}
-            title="Arrastra para reubicar. Muestra previsualización del destino sobre la trayectoria"
-            className={`nodrag nopan nowheel px-2.5 py-1 rounded-xl text-[10px] font-bold shadow-xl backdrop-blur-md whitespace-nowrap z-30 select-none transition-shadow ${
+            title="Arrastra a lo largo para acomodarla, o perpendicularmente para empujar la línea de relación"
+            className={`nodrag nopan nowheel px-2.5 py-1 rounded-xl text-[10px] font-bold shadow-xl backdrop-blur-md whitespace-nowrap z-30 select-none transition-all ${
               estaArrastrando
                 ? 'cursor-grabbing bg-indigo-600/95 text-white border-2 border-indigo-400 scale-105 shadow-2xl shadow-indigo-500/50'
                 : 'cursor-grab bg-[#1C1C1E]/95 hover:bg-[#252528] text-zinc-200 border border-zinc-700/80 hover:border-zinc-500'

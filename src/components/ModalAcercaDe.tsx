@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, BookOpen, CheckCircle2, GraduationCap, ShieldCheck } from 'lucide-react';
 
 interface PropsModalAcercaDe {
@@ -23,7 +24,7 @@ export const ModalAcercaDe: React.FC<PropsModalAcercaDe> = ({ abierto, alCerrar 
 
   if (!abierto) return null;
 
-  return (
+  const contenidoModal = (
     <div
       role="dialog"
       aria-modal="true"
@@ -145,4 +146,8 @@ export const ModalAcercaDe: React.FC<PropsModalAcercaDe> = ({ abierto, alCerrar 
       </div>
     </div>
   );
+
+  return typeof document !== 'undefined' && document.body
+    ? createPortal(contenidoModal, document.body)
+    : contenidoModal;
 };

@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { Handle, Position, type NodeProps } from '@xyflow/react';
-import { Layers, ListOrdered, CheckCircle2, BookmarkCheck } from 'lucide-react';
+import { Layers, ListOrdered, CheckCircle2, BookmarkCheck, Compass } from 'lucide-react';
 import type { NodoScrum } from '../../types/scrum';
 
 /**
@@ -12,6 +12,8 @@ export const ArtifactNode: React.FC<NodeProps<NodoScrum>> = memo(({ data, select
 
   const obtenerIcono = () => {
     switch (data.id) {
+      case 'artifact-vision-board':
+        return <Compass className="w-5 h-5 text-emerald-400" />;
       case 'artifact-product-backlog':
         return <ListOrdered className="w-5 h-5 text-emerald-400" />;
       case 'artifact-sprint-backlog':

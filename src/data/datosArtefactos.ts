@@ -1,5 +1,5 @@
 /**
- * Definición de los Artefactos oficiales de Scrum y sus Compromisos.
+ * Definición de los Artefactos oficiales y herramientas estratégicas de Scrum.
  * Carril Inferior: y = 520
  */
 
@@ -7,16 +7,36 @@ import type { NodoScrum } from '../types/scrum';
 
 export const nodosArtefactos: NodoScrum[] = [
   {
+    id: 'artifact-vision-board',
+    type: 'artifactNode',
+    position: { x: 60, y: 520 },
+    data: {
+      id: 'artifact-vision-board',
+      label: 'Product Vision Board',
+      category: 'artifact',
+      summary: 'Marco visual estratégico que define el grupo objetivo, necesidades del usuario, propuesta de valor y metas del negocio.',
+      details: {
+        inputs: ['Investigación de mercado', 'Entrevistas con clientes', 'Visión corporativa'],
+        outputs: [
+          'Compromiso: Visión Clara del Producto',
+          'Fundamento conceptual del Product Goal y del Product Backlog inicial'
+        ],
+        theoreticalBasis:
+          'Desarrollado por Roman Pichler; actúa como la brújula estratégica que responde el "por qué" y "para quién" antes de iniciar la gestión del backlog.'
+      }
+    }
+  },
+  {
     id: 'artifact-product-backlog',
     type: 'artifactNode',
-    position: { x: 200, y: 520 },
+    position: { x: 380, y: 520 },
     data: {
       id: 'artifact-product-backlog',
       label: 'Product Backlog',
       category: 'artifact',
       summary: 'Lista emergente y ordenada de todo lo que se sabe necesario para mejorar el producto.',
       details: {
-        inputs: ['Visión estratégica', 'Investigación de usuarios', 'Feedback continuo del mercado'],
+        inputs: ['Product Vision Board', 'Visión estratégica', 'Feedback continuo del mercado'],
         outputs: [
           'Compromiso: Product Goal (Objetivo del Producto)',
           'Elementos del Product Backlog (PBI) refinados y ordenados'
@@ -29,7 +49,7 @@ export const nodosArtefactos: NodoScrum[] = [
   {
     id: 'artifact-sprint-backlog',
     type: 'artifactNode',
-    position: { x: 580, y: 520 },
+    position: { x: 700, y: 520 },
     data: {
       id: 'artifact-sprint-backlog',
       label: 'Sprint Backlog',
@@ -49,7 +69,7 @@ export const nodosArtefactos: NodoScrum[] = [
   {
     id: 'artifact-increment',
     type: 'artifactNode',
-    position: { x: 960, y: 520 },
+    position: { x: 1020, y: 520 },
     data: {
       id: 'artifact-increment',
       label: 'Increment',

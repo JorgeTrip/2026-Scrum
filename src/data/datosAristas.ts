@@ -6,17 +6,38 @@ import { MarkerType } from '@xyflow/react';
 import type { AristaScrum } from '../types/scrum';
 
 export const aristasScrum: AristaScrum[] = [
-  // Relaciones de Roles a Artefactos/Eventos
+  // Relaciones Estratégicas Iniciales
+  {
+    id: 'edge-po-to-vision',
+    source: 'role-product-owner',
+    target: 'artifact-vision-board',
+    label: 'Crea la visión',
+    type: 'smoothstep',
+    animated: true,
+    style: { stroke: '#F59E0B', strokeWidth: 2 },
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#F59E0B' }
+  },
+  {
+    id: 'edge-vision-to-pb',
+    source: 'artifact-vision-board',
+    target: 'artifact-product-backlog',
+    label: 'Nutre el Product Goal y PBI',
+    type: 'smoothstep',
+    animated: true,
+    style: { stroke: '#10B981', strokeWidth: 2 },
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#10B981' }
+  },
   {
     id: 'edge-po-to-pb',
     source: 'role-product-owner',
     target: 'artifact-product-backlog',
     label: 'Gestiona y prioriza',
     type: 'smoothstep',
-    animated: true,
     style: { stroke: '#F59E0B', strokeWidth: 2 },
     markerEnd: { type: MarkerType.ArrowClosed, color: '#F59E0B' }
   },
+
+  // Relaciones de Roles a Eventos/Artefactos
   {
     id: 'edge-devs-to-daily',
     source: 'role-developers',

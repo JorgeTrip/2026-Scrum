@@ -23,15 +23,19 @@ describe('Modelo de Datos Scrum (scrumData)', () => {
     expect(idsEventos).toContain('event-sprint-retrospective');
   });
 
-  it('debe contener los 3 artefactos oficiales con sus compromisos', () => {
+  it('debe contener el Product Vision Board y los 3 artefactos oficiales', () => {
     const artefactos = nodosScrum.filter((n) => n.data.category === 'artifact');
-    expect(artefactos).toHaveLength(3);
+    expect(artefactos).toHaveLength(4);
     const idsArtefactos = artefactos.map((a) => a.id);
+    expect(idsArtefactos).toContain('artifact-vision-board');
     expect(idsArtefactos).toContain('artifact-product-backlog');
     expect(idsArtefactos).toContain('artifact-sprint-backlog');
     expect(idsArtefactos).toContain('artifact-increment');
 
-    // Verificar compromisos en salidas
+    // Verificar compromisos y conexiones
+    const vb = artefactos.find((a) => a.id === 'artifact-vision-board');
+    expect(vb?.data.details.outputs?.some((o) => o.includes('Visión'))).toBe(true);
+
     const pb = artefactos.find((a) => a.id === 'artifact-product-backlog');
     expect(pb?.data.details.outputs?.some((o) => o.includes('Product Goal'))).toBe(true);
 
@@ -44,7 +48,8 @@ describe('Modelo de Datos Scrum (scrumData)', () => {
 
   it('debe contener las aristas clave del flujo metodológico', () => {
     const conexiones = aristasScrum.map((e) => `${e.source}->${e.target}`);
-    expect(conexiones).toContain('role-product-owner->artifact-product-backlog');
+    expect(conexiones).toContain('role-product-owner->artifact-vision-board');
+    expect(conexiones).toContain('artifact-vision-board->artifact-product-backlog');
     expect(conexiones).toContain('artifact-product-backlog->event-sprint-planning');
     expect(conexiones).toContain('event-sprint-planning->artifact-sprint-backlog');
     expect(conexiones).toContain('role-developers->event-daily-scrum');

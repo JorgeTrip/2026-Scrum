@@ -26,6 +26,15 @@ interface PropiedadesArrastreArista {
  * Hook para gestionar la elevación de etiqueta, arrastre fluido y deformación elástica de aristas.
  * Garantiza que exista una única etiqueta que se levanta al presionar y acompaña al ratón hasta su destino.
  */
+const estadosPredeterminadosAristas: Record<string, EstadoEtiquetaArista> = {
+  'edge-po-to-vision': { t: 0.538, desvio: -19 },
+  'edge-sprint-to-planning': { t: 0.413, desvio: 4 },
+  'edge-planning-to-sb': { t: 0.45, desvio: -3 },
+  'edge-retro-to-next-cycle': { t: 0.438, desvio: 248 },
+  'edge-planning-to-daily': { t: 0.488, desvio: 0 },
+  'edge-devs-to-sb': { t: 0.488, desvio: -36 }
+};
+
 export function useArrastreArista({
   id,
   sourceX,
@@ -36,7 +45,7 @@ export function useArrastreArista({
   screenToFlowPosition
 }: PropiedadesArrastreArista) {
   const [estadoArista, setEstadoArista] = useState<EstadoEtiquetaArista>(() => {
-    return obtenerEstadoEtiqueta(id) ?? { t: 0.5, desvio: 0 };
+    return obtenerEstadoEtiqueta(id) ?? estadosPredeterminadosAristas[id] ?? { t: 0.5, desvio: 0 };
   });
 
   const [estaPresionada, setEstaPresionada] = useState(false);
@@ -51,7 +60,7 @@ export function useArrastreArista({
 
   useEffect(() => {
     const alRestablecer = () => {
-      setEstadoArista({ t: 0.5, desvio: 0 });
+      setEstadoArista(estadosPredeterminadosAristas[id] ?? { t: 0.5, desvio: 0 });
       setDesvioTemporal(null);
       setDestinoProyectado(null);
       setCursorFlotante(null);
@@ -60,7 +69,7 @@ export function useArrastreArista({
     };
     window.addEventListener('restablecer-posiciones-scrum', alRestablecer);
     return () => window.removeEventListener('restablecer-posiciones-scrum', alRestablecer);
-  }, []);
+  }, [id]);
 
   const dx = targetX - sourceX;
   const dy = targetY - sourceY;

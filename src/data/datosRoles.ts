@@ -9,7 +9,7 @@ export const nodosRoles: NodoScrum[] = [
   {
     id: 'role-product-owner',
     type: 'roleNode',
-    position: { x: 100, y: 60 },
+    position: { x: 107, y: -53 },
     data: {
       id: 'role-product-owner',
       label: 'Product Owner',
@@ -31,7 +31,7 @@ export const nodosRoles: NodoScrum[] = [
   {
     id: 'role-developers',
     type: 'roleNode',
-    position: { x: 620, y: 60 },
+    position: { x: 630, y: -50 },
     data: {
       id: 'role-developers',
       label: 'Developers',
@@ -53,7 +53,7 @@ export const nodosRoles: NodoScrum[] = [
   {
     id: 'role-scrum-master',
     type: 'roleNode',
-    position: { x: 1140, y: 60 },
+    position: { x: 1203, y: -49 },
     data: {
       id: 'role-scrum-master',
       label: 'Scrum Master',

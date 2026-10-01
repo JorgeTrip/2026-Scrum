@@ -2,6 +2,7 @@ import React, { useMemo, useCallback, useState, useEffect } from 'react';
 import {
   ReactFlow,
   ReactFlowProvider,
+  useReactFlow,
   Controls,
   MiniMap,
   Background,
@@ -74,27 +75,37 @@ const FlowCanvasInterno: React.FC<FlowCanvasProps> = ({
     });
   }, []);
 
+  const { fitView } = useReactFlow();
+
+  // Ajuste automático reactivo para monitores más pequeños o cambio de tamaño de ventana
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    const alRedimensionar = () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        fitView({ padding: 0.15, duration: 250 });
+      }, 100);
+    };
+    window.addEventListener('resize', alRedimensionar);
+    return () => {
+      window.removeEventListener('resize', alRedimensionar);
+      clearTimeout(timer);
+    };
+  }, [fitView]);
+
   const restablecerPosicionesOriginales = useCallback(() => {
     limpiarPosicionesPersonalizadas();
     setNodosInternos(nodos);
     window.dispatchEvent(new CustomEvent('restablecer-posiciones-scrum'));
   }, [nodos]);
 
-  const nodeTypes = useMemo<NodeTypes>(
-    () => ({
-      roleNode: RoleNode as unknown as NodeTypes['roleNode'],
-      eventNode: EventNode as unknown as NodeTypes['eventNode'],
-      artifactNode: ArtifactNode as unknown as NodeTypes['artifactNode']
-    }),
-    []
-  );
+  const nodeTypes = useMemo<NodeTypes>(() => ({
+    roleNode: RoleNode as unknown as NodeTypes['roleNode'],
+    eventNode: EventNode as unknown as NodeTypes['eventNode'],
+    artifactNode: ArtifactNode as unknown as NodeTypes['artifactNode']
+  }), []);
 
-  const edgeTypes = useMemo<EdgeTypes>(
-    () => ({
-      despejada: AristaDespejada
-    }),
-    []
-  );
+  const edgeTypes = useMemo<EdgeTypes>(() => ({ despejada: AristaDespejada }), []);
 
   const manejarClickEnNodo: NodeMouseHandler<NodoScrum> = useCallback(
     (_evento, nodo) => {

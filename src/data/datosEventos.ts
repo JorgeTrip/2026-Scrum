@@ -9,7 +9,7 @@ export const nodosEventos: NodoScrum[] = [
   {
     id: 'event-sprint',
     type: 'eventNode',
-    position: { x: 80, y: 290 },
+    position: { x: 474, y: 246 },
     data: {
       id: 'event-sprint',
       label: 'Sprint',
@@ -28,7 +28,7 @@ export const nodosEventos: NodoScrum[] = [
   {
     id: 'event-sprint-planning',
     type: 'eventNode',
-    position: { x: 360, y: 290 },
+    position: { x: 959, y: 251 },
     data: {
       id: 'event-sprint-planning',
       label: 'Sprint Planning',
@@ -47,7 +47,7 @@ export const nodosEventos: NodoScrum[] = [
   {
     id: 'event-daily-scrum',
     type: 'eventNode',
-    position: { x: 640, y: 290 },
+    position: { x: 1368, y: 243 },
     data: {
       id: 'event-daily-scrum',
       label: 'Daily Scrum',
@@ -66,7 +66,7 @@ export const nodosEventos: NodoScrum[] = [
   {
     id: 'event-sprint-review',
     type: 'eventNode',
-    position: { x: 920, y: 290 },
+    position: { x: 1816, y: 251 },
     data: {
       id: 'event-sprint-review',
       label: 'Sprint Review',
@@ -85,7 +85,7 @@ export const nodosEventos: NodoScrum[] = [
   {
     id: 'event-sprint-retrospective',
     type: 'eventNode',
-    position: { x: 1200, y: 290 },
+    position: { x: 2193, y: 249 },
     data: {
       id: 'event-sprint-retrospective',
       label: 'Sprint Retrospective',

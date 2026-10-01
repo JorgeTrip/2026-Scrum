@@ -1,5 +1,12 @@
 [
   {
+    "hash": "888be03",
+    "mensaje": "feat: Se agrega README completo con especificacion metodologica y tecnica",
+    "autor": "Jorge O. Tripodi",
+    "fecha": "2026-10-01",
+    "tipo": "feat"
+  },
+  {
     "hash": "ebe59bd",
     "mensaje": "feat: Se implementan titulos fijos en swimlanes, modal de historial y pipeline de CI/CD sin conflictos",
     "autor": "Jorge O. Tripodi",

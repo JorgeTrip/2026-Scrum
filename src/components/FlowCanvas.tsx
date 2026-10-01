@@ -143,8 +143,10 @@ const FlowCanvasInterno: React.FC<FlowCanvasProps> = ({
         {/* 3 Swimlanes que abarcan el 100% del viewport vertical reactivos al zoom */}
         <Swimlanes />
 
-        {/* Controles de navegación y encuadre (Fit View) */}
+        {/* Controles de navegación y encuadre ubicados a la izquierda del mini-mapa */}
         <Controls
+          position="bottom-right"
+          style={{ marginRight: 225 }}
           className="!bg-[#1C1C1E] !border !border-zinc-800 !rounded-xl !shadow-xl !overflow-hidden [&>button]:!bg-[#1C1C1E] [&>button]:!border-zinc-800 [&>button]:!text-zinc-300 [&>button:hover]:!bg-zinc-800"
           showInteractive={false}
         />

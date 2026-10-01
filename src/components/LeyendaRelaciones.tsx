@@ -9,7 +9,7 @@ export const LeyendaRelaciones: React.FC = () => {
   const [abierta, setAbierta] = useState(false);
 
   return (
-    <div className="absolute bottom-6 right-6 z-20 pointer-events-auto select-none">
+    <div className="absolute bottom-6 left-6 z-20 pointer-events-auto select-none">
       {abierta ? (
         <div className="w-80 bg-[#1C1C1E]/95 backdrop-blur-2xl border border-zinc-700/80 rounded-2xl p-4 shadow-2xl shadow-black/80 text-xs text-zinc-300 animate-in fade-in zoom-in-95 duration-200">
           <div className="flex items-center justify-between pb-2 mb-3 border-b border-zinc-800">

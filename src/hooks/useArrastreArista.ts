@@ -33,7 +33,11 @@ const estadosPredeterminadosAristas: Record<string, EstadoEtiquetaArista> = {
   'edge-retro-to-next-cycle': { t: 0.438, desvio: 248 },
   'edge-planning-to-daily': { t: 0.488, desvio: 0 },
   'edge-devs-to-sb': { t: 0.488, desvio: -36 },
-  'edge-increment-to-review': { t: 0.388, desvio: 33 }
+  'edge-increment-to-review': { t: 0.388, desvio: 33 },
+  'edge-sm-to-sprint': { t: 0.5, desvio: 0 },
+  'edge-sm-to-devs': { t: 0.5, desvio: 0 },
+  'edge-sm-to-po': { t: 0.5, desvio: 0 },
+  'edge-sm-to-increment': { t: 0.5, desvio: 0 }
 };
 
 export function useArrastreArista({

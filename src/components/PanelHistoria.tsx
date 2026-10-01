@@ -1,12 +1,15 @@
 import React from 'react';
-import { ArrowLeft, ArrowRight, BookOpen, Compass, RotateCcw, GripHorizontal } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BookOpen, Compass, RotateCcw, GripHorizontal, ShieldCheck } from 'lucide-react';
 import type { CapituloHistoria } from '../data/datosHistoria';
+import type { TipoHistoria } from '../hooks/useHistoriaScrum';
 import { useArrastrable } from '../hooks/useArrastrable';
 
 interface PanelHistoriaProps {
   capitulo: CapituloHistoria;
   pasoActual: number;
   totalPasos: number;
+  tipoHistoria: TipoHistoria;
+  onCambiarTipoHistoria: (tipo: TipoHistoria) => void;
   onSiguiente: () => void;
   onAnterior: () => void;
   onIrAPaso: (paso: number) => void;
@@ -21,6 +24,8 @@ export const PanelHistoria: React.FC<PanelHistoriaProps> = ({
   capitulo,
   pasoActual,
   totalPasos,
+  tipoHistoria,
+  onCambiarTipoHistoria,
   onSiguiente,
   onAnterior,
   onIrAPaso,
@@ -57,6 +62,34 @@ export const PanelHistoria: React.FC<PanelHistoriaProps> = ({
             <span className="text-[10px] font-medium hidden sm:inline">Mover</span>
             <GripHorizontal className="w-4 h-4" />
           </div>
+        </div>
+
+        {/* Selector interactivo de Modo Historia: General vs Scrum Master */}
+        <div className="flex items-center gap-1.5 p-1 bg-zinc-900/90 rounded-2xl border border-zinc-800/80 mb-3.5 shadow-inner">
+          <button
+            type="button"
+            onClick={() => onCambiarTipoHistoria('general')}
+            className={`flex-1 flex items-center justify-center gap-1.5 py-1 px-2.5 rounded-xl text-[11px] font-bold transition-all cursor-pointer ${
+              tipoHistoria === 'general'
+                ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-500/30'
+                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
+            }`}
+          >
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>Flujo General</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => onCambiarTipoHistoria('scrum-master')}
+            className={`flex-1 flex items-center justify-center gap-1.5 py-1 px-2.5 rounded-xl text-[11px] font-bold transition-all cursor-pointer ${
+              tipoHistoria === 'scrum-master'
+                ? 'bg-purple-600 text-white shadow-sm shadow-purple-500/30'
+                : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
+            }`}
+          >
+            <ShieldCheck className="w-3.5 h-3.5" />
+            <span>Scrum Master</span>
+          </button>
         </div>
 
         {/* Segmentos de progreso de etapas */}

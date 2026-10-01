@@ -1,26 +1,30 @@
 /**
  * Custom hook y lógica pura para gestionar la navegación guiada de la historia de Scrum.
+ * Soporta múltiples modos temáticos ('general' y 'scrum-master').
  */
 
 import { useState, useMemo, useCallback } from 'react';
 import type { NodoScrum, AristaScrum } from '../types/scrum';
 import { capitulosHistoria, type CapituloHistoria } from '../data/datosHistoria';
+import { capitulosHistoriaScrumMaster } from '../data/datosHistoriaScrumMaster';
+
+export type TipoHistoria = 'general' | 'scrum-master';
 
 /**
- * Filtra los nodos y aristas que deben ser visibles hasta el paso actual.
+ * Filtra los nodos y aristas que deben ser visibles hasta el paso actual según la historia elegida.
  */
 export function calcularElementosVisiblesHistoria(
   todosLosNodos: NodoScrum[],
   todasLasAristas: AristaScrum[],
-  indicePaso: number
+  indicePaso: number,
+  capitulos: CapituloHistoria[] = capitulosHistoria
 ) {
-  // Colección de todos los IDs introducidos hasta el paso actual inclusive
   const idsVisibles = new Set<string>();
-  for (let i = 0; i <= indicePaso && i < capitulosHistoria.length; i++) {
-    capitulosHistoria[i].idsNodosNuevos.forEach((id) => idsVisibles.add(id));
+  for (let i = 0; i <= indicePaso && i < capitulos.length; i++) {
+    capitulos[i].idsNodosNuevos.forEach((id) => idsVisibles.add(id));
   }
 
-  const capituloActual = capitulosHistoria[indicePaso] || capitulosHistoria[0];
+  const capituloActual = capitulos[indicePaso] || capitulos[0];
   const idsFoco = new Set(capituloActual.idsDestacados);
 
   const nodosVisibles = todosLosNodos
@@ -44,38 +48,50 @@ export function calcularElementosVisiblesHistoria(
 export function useHistoriaScrum(todosLosNodos: NodoScrum[], todasLasAristas: AristaScrum[]) {
   const [pasoActual, setPasoActual] = useState(0);
   const [modoActivo, setModoActivo] = useState<'historia' | 'mapa'>('historia');
+  const [tipoHistoria, setTipoHistoria] = useState<TipoHistoria>('general');
+
+  const capitulosActivos = useMemo(() => {
+    return tipoHistoria === 'scrum-master' ? capitulosHistoriaScrumMaster : capitulosHistoria;
+  }, [tipoHistoria]);
 
   const capituloActual: CapituloHistoria = useMemo(() => {
-    return capitulosHistoria[pasoActual] || capitulosHistoria[0];
-  }, [pasoActual]);
+    return capitulosActivos[pasoActual] || capitulosActivos[0];
+  }, [capitulosActivos, pasoActual]);
 
   const { nodosVisibles, aristasVisibles } = useMemo(() => {
     if (modoActivo === 'mapa') {
       return { nodosVisibles: todosLosNodos, aristasVisibles: todasLasAristas };
     }
-    return calcularElementosVisiblesHistoria(todosLosNodos, todasLasAristas, pasoActual);
-  }, [todosLosNodos, todasLasAristas, pasoActual, modoActivo]);
+    return calcularElementosVisiblesHistoria(todosLosNodos, todasLasAristas, pasoActual, capitulosActivos);
+  }, [todosLosNodos, todasLasAristas, pasoActual, modoActivo, capitulosActivos]);
+
+  const cambiarTipoHistoria = useCallback((nuevoTipo: TipoHistoria) => {
+    setTipoHistoria(nuevoTipo);
+    setPasoActual(0);
+  }, []);
 
   const siguientePaso = useCallback(() => {
-    setPasoActual((prev) => Math.min(prev + 1, capitulosHistoria.length - 1));
-  }, []);
+    setPasoActual((prev) => Math.min(prev + 1, capitulosActivos.length - 1));
+  }, [capitulosActivos.length]);
 
   const anteriorPaso = useCallback(() => {
     setPasoActual((prev) => Math.max(prev - 1, 0));
   }, []);
 
   const irAPaso = useCallback((paso: number) => {
-    if (paso >= 0 && paso < capitulosHistoria.length) {
+    if (paso >= 0 && paso < capitulosActivos.length) {
       setPasoActual(paso);
     }
-  }, []);
+  }, [capitulosActivos.length]);
 
   return {
     pasoActual,
     capituloActual,
-    totalPasos: capitulosHistoria.length,
+    totalPasos: capitulosActivos.length,
     modoActivo,
     setModoActivo,
+    tipoHistoria,
+    cambiarTipoHistoria,
     siguientePaso,
     anteriorPaso,
     irAPaso,

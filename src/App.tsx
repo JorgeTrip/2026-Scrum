@@ -28,6 +28,8 @@ export const App: React.FC = () => {
     totalPasos,
     modoActivo,
     setModoActivo,
+    tipoHistoria,
+    cambiarTipoHistoria,
     siguientePaso,
     anteriorPaso,
     irAPaso,
@@ -86,6 +88,8 @@ export const App: React.FC = () => {
             capitulo={capituloActual}
             pasoActual={pasoActual}
             totalPasos={totalPasos}
+            tipoHistoria={tipoHistoria}
+            onCambiarTipoHistoria={cambiarTipoHistoria}
             onSiguiente={siguientePaso}
             onAnterior={anteriorPaso}
             onIrAPaso={irAPaso}

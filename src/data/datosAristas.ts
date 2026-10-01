@@ -50,6 +50,10 @@ export const aristasScrum: AristaScrum[] = [
   crearArista('edge-devs-to-daily', 'role-developers', 'event-daily-scrum', 'Inspeccionan diariamente', '#3B82F6', 'bottom-left', 'top-center', 20, true),
   crearArista('edge-devs-to-sb', 'role-developers', 'artifact-sprint-backlog', 'Planifican y ejecutan', '#3B82F6', 'bottom-right', 'top-right', 46),
   crearArista('edge-sm-to-retro', 'role-scrum-master', 'event-sprint-retrospective', 'Facilita la mejora', '#8B5CF6', 'bottom-center', 'top-center', 25),
+  crearArista('edge-sm-to-sprint', 'role-scrum-master', 'event-sprint', 'Garantiza eventos y timeboxes', '#8B5CF6', 'bottom-left', 'top-right', 34, true),
+  crearArista('edge-sm-to-devs', 'role-scrum-master', 'role-developers', 'Coaching y remueve impedimentos', '#8B5CF6', 'left-center-source', 'right-center-target', 16, true),
+  crearArista('edge-sm-to-po', 'role-scrum-master', 'role-product-owner', 'Técnicas de Product Goal', '#8B5CF6', 'bottom-left', 'top-right', 48, true),
+  crearArista('edge-sm-to-increment', 'role-scrum-master', 'artifact-increment', 'Vela por la Definition of Done', '#8B5CF6', 'bottom-right', 'top-center', 30, true),
 
   // 3. Flujo Cronológico y Metodológico con corredores escalonados
   crearArista('edge-sprint-to-planning', 'event-sprint', 'event-sprint-planning', 'Inicia con', '#6366F1', 'right-top', 'left-top', 18),

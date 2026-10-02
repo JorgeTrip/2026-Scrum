@@ -118,6 +118,9 @@ export const ModalAcercaDe: React.FC<PropsModalAcercaDe> = ({ abierto, alCerrar 
                 <strong>Autor:</strong> Jorge O. Tripodi
               </p>
               <p>
+                <strong>Título:</strong> Analista Desarrollador Universitario de Sistemas
+              </p>
+              <p>
                 <strong>Institución:</strong> Universidad Tecnológica Nacional (UTN FRBA)
               </p>
               <p className="text-zinc-400 text-[11px] pt-1">

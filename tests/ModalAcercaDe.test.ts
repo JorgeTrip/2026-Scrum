@@ -16,6 +16,7 @@ describe('Componente ModalAcercaDe', () => {
       React.createElement(ModalAcercaDe, { abierto: true, alCerrar: () => {} })
     );
     expect(html).toContain('Jorge O. Tripodi');
+    expect(html).toContain('Analista Desarrollador Universitario de Sistemas');
     expect(html).toContain('UTN FRBA');
     expect(html).toContain('Guía Oficial de Scrum 2020');
     expect(html).toContain('Product Goal');

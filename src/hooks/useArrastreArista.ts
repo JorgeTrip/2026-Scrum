@@ -9,6 +9,7 @@ import {
   obtenerEstadoEtiqueta,
   type EstadoEtiquetaArista
 } from '../utils/persistenciaPosiciones';
+import { estadosPredeterminadosAristas } from '../data/estadosPredeterminadosAristas';
 
 const UMBRAL_MOVIMIENTO_PX = 3;
 
@@ -26,25 +27,6 @@ interface PropiedadesArrastreArista {
  * Hook para gestionar la elevación de etiqueta, arrastre fluido y deformación elástica de aristas.
  * Garantiza que exista una única etiqueta que se levanta al presionar y acompaña al ratón hasta su destino.
  */
-const estadosPredeterminadosAristas: Record<string, EstadoEtiquetaArista> = {
-  'edge-po-to-vision': { t: 0.538, desvio: -19 },
-  'edge-sprint-to-planning': { t: 0.413, desvio: 4 },
-  'edge-planning-to-sb': { t: 0.45, desvio: -3 },
-  'edge-retro-to-next-cycle': { t: 0.438, desvio: 248 },
-  'edge-planning-to-daily': { t: 0.488, desvio: 0 },
-  'edge-devs-to-sb': { t: 0.488, desvio: -36 },
-  'edge-increment-to-review': { t: 0.388, desvio: 33 },
-  'edge-sm-to-sprint': { t: 0.5, desvio: 0 },
-  'edge-sm-to-devs': { t: 0.5, desvio: 0 },
-  'edge-sm-to-po': { t: 0.5, desvio: 0 },
-  'edge-sm-to-increment': { t: 0.5, desvio: 0 },
-  'edge-po-to-planning': { t: 0.5, desvio: 0 },
-  'edge-po-to-devs': { t: 0.5, desvio: 0 },
-  'edge-po-to-review': { t: 0.5, desvio: 0 },
-  'edge-vision-to-im': { t: 0.5, desvio: 0 },
-  'edge-im-to-usm': { t: 0.5, desvio: 0 },
-  'edge-usm-to-pb': { t: 0.5, desvio: 0 }
-};
 
 export function useArrastreArista({
   id,

@@ -7,11 +7,13 @@ export interface ResultadoSnapVertical {
 }
 
 /** Umbral de atracción magnética en píxeles para el encaje vertical */
-export const UMBRAL_SNAP_VERTICAL_DEFECTO = 14;
+/** Umbral de atracción magnética en píxeles para el encaje vertical */
+export const UMBRAL_SNAP_VERTICAL_DEFECTO = 24;
 
 /**
  * Calcula el encaje magnético ("snap") vertical para alinear un elemento arrastrado
- * a la misma altura exacta que otros elementos (priorizando los del mismo carril/categoría).
+ * a la misma altura exacta que otros elementos, priorizando estrictamente el vecino
+ * inmediato a su izquierda dentro del mismo carril para garantizar continuidad de flujo.
  */
 export function calcularSnapVertical(
   nodoArrastradoId: string,
@@ -34,6 +36,25 @@ export function calcularSnapVertical(
   );
   const candidatos = nodosPrioritarios.length > 0 ? nodosPrioritarios : otrosNodos;
 
+  // 1. Prioridad máxima: Vecino inmediato a la izquierda (mayor x menor que posicionPropuesta.x)
+  const nodosIzquierda = candidatos.filter((n) => n.position.x < posicionPropuesta.x);
+  if (nodosIzquierda.length > 0) {
+    // Ordenar de más cercano a más lejano en X (descendente)
+    const vecinoIzquierdo = nodosIzquierda.reduce((prev, curr) =>
+      curr.position.x > prev.position.x ? curr : prev
+    );
+
+    const distVecinoIzq = Math.abs(vecinoIzquierdo.position.y - posicionPropuesta.y);
+    if (distVecinoIzq <= umbral) {
+      return {
+        posicion: { x: posicionPropuesta.x, y: vecinoIzquierdo.position.y },
+        snapY: vecinoIzquierdo.position.y,
+        nodoReferencia: vecinoIzquierdo
+      };
+    }
+  }
+
+  // 2. Si no hay vecino izquierdo en umbral, buscar el candidato más próximo en Y
   let mejorNodo: NodoScrum | null = null;
   let menorDistancia = Infinity;
 

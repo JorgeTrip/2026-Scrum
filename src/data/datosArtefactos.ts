@@ -9,7 +9,7 @@ export const nodosArtefactos: NodoScrum[] = [
   {
     id: 'artifact-vision-board',
     type: 'artifactNode',
-    position: { x: -13, y: 626 },
+    position: { x: -13, y: 620 },
     data: {
       id: 'artifact-vision-board',
       label: 'Product Vision Board',
@@ -30,7 +30,7 @@ export const nodosArtefactos: NodoScrum[] = [
   {
     id: 'artifact-impact-mapping',
     type: 'artifactNode',
-    position: { x: 215, y: 624 },
+    position: { x: 215, y: 620 },
     data: {
       id: 'artifact-impact-mapping',
       label: 'Impact Mapping',
@@ -51,7 +51,7 @@ export const nodosArtefactos: NodoScrum[] = [
   {
     id: 'artifact-user-story-mapping',
     type: 'artifactNode',
-    position: { x: 460, y: 622 },
+    position: { x: 460, y: 620 },
     data: {
       id: 'artifact-user-story-mapping',
       label: 'User Story Mapping',
@@ -93,7 +93,7 @@ export const nodosArtefactos: NodoScrum[] = [
   {
     id: 'artifact-sprint-backlog',
     type: 'artifactNode',
-    position: { x: 960, y: 619 },
+    position: { x: 960, y: 620 },
     data: {
       id: 'artifact-sprint-backlog',
       label: 'Sprint Backlog',
@@ -114,7 +114,7 @@ export const nodosArtefactos: NodoScrum[] = [
   {
     id: 'artifact-increment',
     type: 'artifactNode',
-    position: { x: 1300, y: 610 },
+    position: { x: 1300, y: 620 },
     data: {
       id: 'artifact-increment',
       label: 'Increment',

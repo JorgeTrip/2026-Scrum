@@ -38,10 +38,12 @@ export function useNodosConSnap(nodosIniciales: NodoScrum[]) {
     let arrastrando = false;
 
     const cambiosConSnap = cambios.map((c) => {
-      if (c.type === 'position' && c.position && c.dragging) {
-        arrastrando = true;
+      if (c.type === 'position' && c.position) {
         const res = calcularSnapVertical(c.id, c.position, nodosInternos);
-        if (res.snapY !== null) snapY = res.snapY;
+        if (c.dragging) {
+          arrastrando = true;
+          if (res.snapY !== null) snapY = res.snapY;
+        }
         return { ...c, position: res.posicion };
       }
       return c;

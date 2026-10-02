@@ -3,6 +3,7 @@ import {
   ReactFlow,
   ReactFlowProvider,
   useReactFlow,
+  ViewportPortal,
   MiniMap,
   Background,
   BackgroundVariant,
@@ -126,13 +127,22 @@ const FlowCanvasInterno: React.FC<FlowCanvasProps> = ({
         <Background variant={BackgroundVariant.Dots} gap={24} size={1.5} color="#27272a" />
         <Swimlanes />
 
-        {/* Línea guía magnética visual de encaje vertical ("Snap") */}
-        {guiaSnapY !== null && (
-          <div
-            style={{ top: `${guiaSnapY}px`, left: '-4000px', width: '8000px' }}
-            className="absolute border-t-2 border-dashed border-indigo-400 pointer-events-none z-30 shadow-[0_0_12px_rgba(99,102,241,0.9)]"
-          />
-        )}
+        {/* Línea guía magnética visual de encaje vertical ("Snap") en coordenadas del flujo */}
+        <ViewportPortal>
+          {guiaSnapY !== null && (
+            <div
+              style={{
+                position: 'absolute',
+                top: `${guiaSnapY}px`,
+                left: '-10000px',
+                width: '20000px',
+                pointerEvents: 'none',
+                zIndex: 1000
+              }}
+              className="border-t-2 border-dashed border-indigo-400 shadow-[0_0_12px_rgba(99,102,241,0.9)]"
+            />
+          )}
+        </ViewportPortal>
 
         <ControlZoomPreciso />
 

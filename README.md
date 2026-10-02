@@ -1,6 +1,6 @@
 # 🔄 Plataforma Interactiva del Flujo Metodológico Scrum
 
-[![Version](https://img.shields.io/badge/Versi%C3%B3n-0.2.0-indigo.svg)](https://github.com/JorgeTrip/2026-Scrum)
+[![Version](https://img.shields.io/badge/Versi%C3%B3n-0.2.0-indigo.svg)](https://github.com/JorgeTrip/scrum)
 [![Guía Scrum](https://img.shields.io/badge/Est%C3%A1ndar-Gu%C3%ADa%20Oficial%202020-blue.svg)](https://scrumguides.org/)
 [![Pruebas](https://img.shields.io/badge/Vitest-37%2F37%20Pasadas-emerald.svg)](https://vitest.dev/)
 [![Auditoría](https://img.shields.io/badge/SAST%20Audit-100%25%20Aprobado-success.svg)](#)
@@ -74,8 +74,8 @@ El proyecto implementa un flujo de integración y entrega continua en GitHub Act
 ### Pasos de Instalación
 ```bash
 # 1. Clonar el repositorio
-git clone https://github.com/JorgeTrip/2026-Scrum.git
-cd 2026-Scrum
+git clone https://github.com/JorgeTrip/scrum.git
+cd scrum
 
 # 2. Instalar dependencias
 npm install

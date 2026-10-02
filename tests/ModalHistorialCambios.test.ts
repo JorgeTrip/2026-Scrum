@@ -17,7 +17,7 @@ describe('Componente ModalHistorialCambios', () => {
     );
     expect(html).toContain('Historial de Cambios');
     expect(html).toContain('Buscar en el historial');
-    expect(html).toContain('github.com/JorgeTrip/2026-Scrum');
+    expect(html).toContain('github.com/JorgeTrip/scrum');
     expect(html).toContain('Jorge O. Tripodi');
   });
 });

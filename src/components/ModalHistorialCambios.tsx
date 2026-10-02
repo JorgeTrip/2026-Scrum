@@ -142,7 +142,7 @@ export const ModalHistorialCambios: React.FC<PropsModalHistorial> = ({
                   <p className="text-[10px] text-zinc-400">Por <strong className="text-zinc-300">{item.autor}</strong></p>
                 </div>
                 <a
-                  href={`https://github.com/JorgeTrip/2026-Scrum/commit/${item.hash}`}
+                  href={`https://github.com/JorgeTrip/scrum/commit/${item.hash}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   title="Ver commit en GitHub"
@@ -159,7 +159,7 @@ export const ModalHistorialCambios: React.FC<PropsModalHistorial> = ({
         {/* Pie del Modal */}
         <div className="p-3 border-t border-zinc-800 bg-[#252528]/40 flex items-center justify-between shrink-0">
           <a
-            href="https://github.com/JorgeTrip/2026-Scrum"
+            href="https://github.com/JorgeTrip/scrum"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 text-xs text-zinc-400 hover:text-white transition-colors"
